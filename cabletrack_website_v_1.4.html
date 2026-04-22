@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CableTrack | Cable Burial Risk Assessment & Offshore Wind Cable Engineering</title>
+  <meta name="description" content="CableTrack delivers automated Cable Burial Risk Assessment (CBRA), cable layout optimisation, programme and CAPEX modelling, thermal rating, consenting inputs, and route design for submarine cable and offshore wind projects. OWA CTC835 methodology, ISO 9001, DNV RP-0360, IEC 60287." />
+
+  <!-- SEO meta tags -->
+  <meta name="keywords" content="cable burial risk assessment, CBRA, offshore wind cables, submarine cable engineering, cable layout optimisation, cable route design, DNV RP-0360, OWA CTC835, IEC 60287, cable thermal rating, offshore wind consultancy, CAPEX modelling, programme generator, array cable design, export cable routing, DCO cable parameters, PIER, environmental statement, EMF assessment, cable protection, anchor risk assessment, AIS data analysis, burial depth assessment" />
+  <meta name="author" content="CableTrack Ltd" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://cabletrack.co.uk/" />
+
+  <!-- Open Graph (LinkedIn, Facebook) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="CableTrack | Cable Burial Risk Assessment & Offshore Wind Cable Engineering" />
+  <meta property="og:description" content="Specialist cable engineering platform delivering automated CBRA, layout optimisation, programme and CAPEX modelling, thermal rating, and consenting inputs for submarine cable and offshore wind projects." />
+  <meta property="og:url" content="https://cabletrack.co.uk/" />
+  <meta property="og:site_name" content="CableTrack" />
+  <meta property="og:locale" content="en_GB" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="CableTrack | Cable Burial Risk Assessment & Offshore Wind Cable Engineering" />
+  <meta name="twitter:description" content="Automated CBRA, cable layout optimisation, programme and CAPEX modelling, thermal rating, and route design for offshore wind and submarine cable projects." />
+
+  <!-- Structured Data (Schema.org) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "CableTrack Ltd",
+    "description": "Specialist cable engineering platform and consultancy delivering automated Cable Burial Risk Assessment, cable layout optimisation, programme and CAPEX modelling, thermal rating, consenting inputs, and route design for submarine cable and offshore wind projects.",
+    "url": "https://cabletrack.co.uk",
+    "email": "hello@cabletrack.co.uk",
+    "telephone": "+447916986132",
+    "areaServed": "Worldwide",
+    "serviceType": [
+      "Cable Burial Risk Assessment",
+      "Cable Layout Optimisation",
+      "Programme and CAPEX Modelling",
+      "Cable Route Design",
+      "Cable Thermal Rating",
+      "Offshore Consenting Inputs",
+      "Feasibility Studies",
+      "Desktop Studies"
+    ],
+    "knowsAbout": [
+      "OWA CTC835",
+      "DNV RP-0360",
+      "ISO 9001:2015",
+      "IEC 60287",
+      "Submarine cables",
+      "Offshore wind farms",
+      "AIS data analysis",
+      "Cable burial depth assessment"
+    ],
+    "sameAs": []
+  }
+  </script>
+  <style>
+    :root {
+      --bg: #081018;
+      --bg-2: #0c1721;
+      --panel: #101d28;
+      --panel-2: #132331;
+      --line: rgba(125, 223, 220, 0.18);
+      --text: #eaf4f7;
+      --muted: #aabdc7;
+      --accent: #6fd7d3;
+      --accent-2: #2f8fa2;
+      --white: #ffffff;
+      --max: 1200px;
+      --radius: 20px;
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+      --warn: #f0b957;
+      --purple: #a78bfa;
+      --orange: #fb923c;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(180deg, rgba(111,215,211,0.05), transparent 18%),
+        linear-gradient(135deg, #071018 0%, #0c1620 48%, #081018 100%);
+      line-height: 1.5;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    .container { width: min(calc(100% - 2rem), var(--max)); margin: 0 auto; }
+    .section { padding: 88px 0; }
+    .eyebrow {
+      display: inline-block;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--accent);
+      background: rgba(111,215,211,0.08);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 { margin: 0 0 16px; line-height: 1.05; }
+    h1 { font-size: clamp(2.75rem, 7vw, 5.25rem); letter-spacing: -0.04em; }
+    h2 { font-size: clamp(2rem, 4vw, 3.25rem); letter-spacing: -0.03em; }
+    h3 { font-size: 1.2rem; }
+    p { margin: 0 0 18px; color: var(--muted); }
+    .lead { font-size: clamp(1.08rem, 2vw, 1.25rem); max-width: 760px; }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 50px; padding: 0 22px; border-radius: 14px;
+      font-weight: 600; transition: 0.2s ease; border: 1px solid transparent;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #8af0ec);
+      color: #062028;
+      box-shadow: 0 10px 30px rgba(111,215,211,0.25);
+    }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-secondary {
+      border-color: var(--line);
+      background: rgba(255,255,255,0.02);
+      color: var(--text);
+    }
+
+    header {
+      position: sticky; top: 0; z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(8, 16, 24, 0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      min-height: 74px; gap: 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 14px; font-weight: 700; letter-spacing: 0.01em; }
+    .brand-mark {
+      width: 42px; height: 42px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        linear-gradient(135deg, rgba(111,215,211,0.2), rgba(47,143,162,0.08)),
+        #0d1620;
+      display: grid; place-items: center; overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    }
+    .brand-mark svg { width: 28px; height: 28px; }
+    .nav-links {
+      display: flex; align-items: center; gap: 24px; color: var(--muted); font-size: 0.96rem;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { display: flex; align-items: center; gap: 12px; }
+    .menu-toggle {
+      display: none; background: transparent; color: var(--text); border: 1px solid var(--line);
+      padding: 10px 12px; border-radius: 12px;
+    }
+
+    .hero {
+      position: relative; overflow: hidden;
+      padding: 90px 0 70px;
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 34px; align-items: center;
+    }
+    .hero-card, .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero-visual {
+      padding: 20px;
+      min-height: 520px;
+      display: grid; place-items: center;
+      position: relative;
+      background:
+        radial-gradient(circle at top, rgba(111,215,211,0.15), transparent 38%),
+        linear-gradient(180deg, #0f1b26 0%, #0c1721 100%);
+    }
+    .hero-visual::before {
+      content: "";
+      position: absolute; inset: 22px;
+      border: 1px solid rgba(111,215,211,0.1);
+      border-radius: 18px;
+      pointer-events: none;
+    }
+    .logo-plate {
+      width: min(100%, 420px);
+      aspect-ratio: 1;
+      display: grid; place-items: center;
+    }
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 24px;
+    }
+    .stat {
+      padding: 18px; border-radius: 16px; background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .stat strong { display: block; font-size: 1.1rem; margin-bottom: 6px; }
+    .stat span { color: var(--muted); font-size: 0.92rem; }
+
+    .cards-3, .cards-4, .cards-9, .process-grid, .footer-grid {
+      display: grid; gap: 20px;
+    }
+    .cards-3 { grid-template-columns: repeat(3, 1fr); }
+    .cards-4 { grid-template-columns: repeat(4, 1fr); }
+    .cards-9 { grid-template-columns: repeat(3, 1fr); }
+    .process-grid { grid-template-columns: repeat(6, 1fr); }
+    .footer-grid { grid-template-columns: 1.15fr 0.85fr; }
+
+    .card {
+      padding: 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+    .card-icon {
+      width: 46px; height: 46px; border-radius: 14px;
+      display: grid; place-items: center; margin-bottom: 18px;
+      background: rgba(111,215,211,0.12); color: var(--accent);
+      border: 1px solid rgba(111,215,211,0.2);
+      font-weight: 700;
+    }
+    .muted-list { display: grid; gap: 10px; color: var(--muted); padding: 0; margin: 18px 0 0; list-style: none; }
+    .muted-list li::before { content: "\2022 "; color: var(--accent); }
+
+    .showcase {
+      display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 24px; align-items: stretch;
+    }
+    .showcase-reverse {
+      display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 24px; align-items: stretch;
+    }
+    .wireframe {
+      min-height: 480px; padding: 20px;
+      background:
+        linear-gradient(rgba(111,215,211,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(111,215,211,0.06) 1px, transparent 1px),
+        linear-gradient(180deg, #0e1924 0%, #0a131c 100%);
+      background-size: 28px 28px, 28px 28px, auto;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Pipeline visualisation */
+    .pipeline-visual {
+      display: flex; flex-direction: column; gap: 0;
+      position: absolute; inset: 24px;
+    }
+    .pipe-stage {
+      flex: 1; display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px;
+      border-left: 3px solid var(--accent);
+      position: relative;
+    }
+    .pipe-stage::before {
+      content: "";
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+      position: absolute; left: -8px;
+      box-shadow: 0 0 12px rgba(111,215,211,0.4);
+    }
+    .pipe-stage.active { border-left-color: var(--warn); }
+    .pipe-stage.active::before { background: var(--warn); box-shadow: 0 0 12px rgba(240,185,87,0.4); }
+    .pipe-label {
+      font-size: 0.82rem; font-weight: 600; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.04em; min-width: 90px;
+    }
+    .pipe-stage.active .pipe-label { color: var(--warn); }
+    .pipe-desc { font-size: 0.82rem; color: var(--muted); }
+    .pipe-badge {
+      margin-left: auto;
+      font-size: 0.72rem; font-weight: 600;
+      padding: 4px 10px; border-radius: 999px;
+      background: rgba(111,215,211,0.14);
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .pipe-stage.active .pipe-badge { background: rgba(240,185,87,0.16); color: var(--warn); }
+
+    /* Layout optimiser visual */
+    .layout-visual {
+      min-height: 480px; padding: 28px;
+      background:
+        radial-gradient(circle at 30% 40%, rgba(167,139,250,0.08), transparent 50%),
+        radial-gradient(circle at 70% 60%, rgba(111,215,211,0.08), transparent 50%),
+        linear-gradient(180deg, #0e1924 0%, #0a131c 100%);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .algo-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    }
+    .algo-pill {
+      padding: 10px 14px; border-radius: 12px;
+      font-size: 0.78rem; font-weight: 500;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--muted);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .algo-pill .algo-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .algo-p1 .algo-dot { background: var(--accent); }
+    .algo-p2 .algo-dot { background: var(--warn); }
+    .algo-p3 .algo-dot { background: var(--purple); }
+    .algo-p4 .algo-dot { background: #f87171; }
+    .algo-legend {
+      display: flex; gap: 16px; margin-top: 16px; font-size: 0.72rem; color: var(--muted);
+    }
+    .algo-legend span { display: flex; align-items: center; gap: 5px; }
+    .algo-legend .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    /* Programme visual */
+    .programme-visual {
+      min-height: 480px; padding: 28px;
+      background:
+        radial-gradient(circle at 40% 30%, rgba(251,146,60,0.08), transparent 50%),
+        radial-gradient(circle at 60% 70%, rgba(111,215,211,0.06), transparent 50%),
+        linear-gradient(180deg, #0e1924 0%, #0a131c 100%);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+      display: flex; flex-direction: column; justify-content: center; gap: 14px;
+    }
+    .prog-row {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .prog-vessel {
+      min-width: 50px; font-size: 0.72rem; font-weight: 700;
+      color: var(--orange); text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .prog-bar-track {
+      flex: 1; height: 32px; border-radius: 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative; overflow: hidden;
+    }
+    .prog-bar {
+      height: 100%; border-radius: 10px;
+      display: flex; align-items: center; padding: 0 12px;
+      font-size: 0.72rem; font-weight: 600; color: var(--bg);
+      white-space: nowrap;
+    }
+    .prog-bar.clv { width: 85%; background: linear-gradient(90deg, var(--orange), #fbbf24); }
+    .prog-bar.tsv { width: 65%; background: linear-gradient(90deg, var(--accent), #8af0ec); }
+    .prog-bar.w2w { width: 45%; background: linear-gradient(90deg, var(--purple), #c4b5fd); }
+    .prog-bar.wow { width: 20%; background: rgba(255,255,255,0.15); color: var(--muted); }
+    .prog-flow {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px;
+    }
+    .prog-flow-item {
+      padding: 12px; border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+    }
+    .prog-flow-item strong { display: block; font-size: 0.82rem; color: var(--text); margin-bottom: 4px; }
+    .prog-flow-item span { font-size: 0.72rem; color: var(--muted); }
+    .prog-arrow {
+      display: flex; align-items: center; justify-content: center;
+      color: var(--orange); font-size: 0.8rem; margin: 6px 0;
+    }
+
+    .process-step .step-number {
+      display: inline-flex; width: 34px; height: 34px; border-radius: 50%;
+      align-items: center; justify-content: center; margin-bottom: 14px;
+      background: rgba(111,215,211,0.14); color: var(--accent); font-weight: 700;
+      border: 1px solid rgba(111,215,211,0.22);
+    }
+
+    .cta-band {
+      padding: 32px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(111,215,211,0.13), rgba(47,143,162,0.08));
+      border: 1px solid rgba(111,215,211,0.18);
+      display: flex; gap: 24px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+    }
+
+    .contact-form { display: grid; gap: 14px; }
+    .input, textarea {
+      width: 100%; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03); color: var(--text);
+      padding: 14px 16px; font: inherit;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+
+    /* Highlight cards */
+    .card-highlight { border-color: rgba(111,215,211,0.25); background: linear-gradient(180deg, rgba(111,215,211,0.06), rgba(111,215,211,0.02)); }
+    .card-highlight-purple { border-color: rgba(167,139,250,0.25); background: linear-gradient(180deg, rgba(167,139,250,0.06), rgba(167,139,250,0.02)); }
+    .card-highlight-orange { border-color: rgba(251,146,60,0.25); background: linear-gradient(180deg, rgba(251,146,60,0.06), rgba(251,146,60,0.02)); }
+    .tag-live {
+      display: inline-block; padding: 3px 10px; border-radius: 999px;
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      background: rgba(111,215,211,0.18); color: var(--accent);
+      letter-spacing: 0.05em; margin-left: 8px; vertical-align: middle;
+    }
+    .tag-new {
+      display: inline-block; padding: 3px 10px; border-radius: 999px;
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      background: rgba(167,139,250,0.18); color: var(--purple);
+      letter-spacing: 0.05em; margin-left: 8px; vertical-align: middle;
+    }
+    .tag-new-orange {
+      display: inline-block; padding: 3px 10px; border-radius: 999px;
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      background: rgba(251,146,60,0.18); color: var(--orange);
+      letter-spacing: 0.05em; margin-left: 8px; vertical-align: middle;
+    }
+
+    /* Standards bar */
+    .standards-bar { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+    .standard-badge {
+      padding: 8px 16px; border-radius: 12px;
+      font-size: 0.8rem; font-weight: 600;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+    }
+
+    /* Service tiers */
+    .tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+    .tier {
+      padding: 22px; border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+    }
+    .tier h3 { font-size: 1rem; margin-bottom: 8px; }
+    .tier p { font-size: 0.85rem; margin: 0; }
+
+    footer {
+      padding: 28px 0 50px;
+      color: var(--muted);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .small { font-size: 0.92rem; }
+
+    @media (max-width: 1080px) {
+      .hero-grid, .showcase, .showcase-reverse, .footer-grid, .cards-4, .cards-3 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .cards-9 { grid-template-columns: 1fr 1fr; }
+      .process-grid { grid-template-columns: repeat(3, 1fr); }
+      .tier-grid { grid-template-columns: repeat(3, 1fr); }
+      .hero-visual { min-height: 420px; }
+    }
+
+    @media (max-width: 760px) {
+      .nav-links, .nav-cta .btn { display: none; }
+      .menu-toggle { display: inline-flex; }
+      .nav.open .nav-links {
+        display: grid; position: absolute; left: 1rem; right: 1rem; top: 76px;
+        background: #0c1721; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08);
+      }
+      .hero-grid, .showcase, .showcase-reverse, .footer-grid, .cards-4, .cards-3, .cards-9, .process-grid, .hero-stats, .tier-grid, .algo-grid, .prog-flow {
+        grid-template-columns: 1fr;
+      }
+      .section { padding: 68px 0; }
+      .hero { padding-top: 64px; }
+      .pipeline-visual { position: relative; inset: auto; }
+      .wireframe, .layout-visual, .programme-visual { min-height: auto; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav" id="topNav">
+      <a class="brand" href="#home" aria-label="CableTrack - Home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="50,6 84,26 84,74 50,94 16,74 16,26" fill="#071018" stroke="#6fd7d3" stroke-width="3"/>
+            <path d="M24 34 L50 50 L76 34" stroke="#6fd7d3" stroke-width="6" stroke-linecap="round"/>
+            <path d="M24 66 L50 50 L76 66" stroke="#6fd7d3" stroke-width="6" stroke-linecap="round"/>
+            <path d="M38 22V42 M50 18V46 M62 22V42" stroke="#eaf4f7" stroke-width="4"/>
+            <path d="M38 58V78 M50 54V82 M62 58V78" stroke="#2f8fa2" stroke-width="4"/>
+          </svg>
+        </span>
+        <span>CableTrack</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#services">Services</a>
+        <a href="#cbra">CBRA</a>
+        <a href="#layout">Layout</a>
+        <a href="#programme">Programme &amp; CAPEX</a>
+        <a href="#platform">Platform</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="nav-cta">
+        <a class="btn btn-secondary" href="#platform">View Platform</a>
+        <a class="btn btn-primary" href="#contact">Book a Call</a>
+        <button class="menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">Menu</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="home">
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Cable Engineering Platform &amp; Consultancy</span>
+          <h1>Automated cable intelligence for offshore energy.</h1>
+          <p class="lead">CableTrack is a specialist cable engineering platform that combines proprietary automation with deep industry expertise. From feasibility and consenting through automated CBRA, layout optimisation, programme scheduling, and CAPEX modelling, we deliver faster, more consistent, and fully traceable engineering services across every project phase.</p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="#contact">Request a Demo</a>
+            <a class="btn btn-secondary" href="#services">Explore Services</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat"><strong>Automated CBRA</strong><span>End-to-end pipeline from AIS data to client-ready reports, built on OWA methodology.</span></div>
+            <div class="stat"><strong>Layout Optimisation</strong><span>Multi-algorithm cable routing engine for inter-array and export cable design.</span></div>
+            <div class="stat"><strong>Programme &amp; CAPEX</strong><span>Weather-adjusted installation scheduling with fully itemised cost modelling.</span></div>
+          </div>
+        </div>
+
+        <div class="hero-card hero-visual">
+          <div class="logo-plate" aria-hidden="true">
+            <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="gradTeal" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#8cf3ee"/>
+                  <stop offset="100%" stop-color="#2f8fa2"/>
+                </linearGradient>
+                <clipPath id="hexClip">
+                  <polygon points="300,45 485,150 485,450 300,555 115,450 115,150"/>
+                </clipPath>
+              </defs>
+              <polygon points="300,45 485,150 485,450 300,555 115,450 115,150" fill="#050b12" stroke="#6fd7d3" stroke-opacity="0.25" stroke-width="4"/>
+              <g clip-path="url(#hexClip)">
+                <rect x="0" y="0" width="600" height="600" fill="#050b12"/>
+                <g stroke="#dff8f7" stroke-width="10" opacity="0.95">
+                  <line x1="215" y1="120" x2="215" y2="260"/>
+                  <line x1="250" y1="100" x2="250" y2="280"/>
+                  <line x1="300" y1="85" x2="300" y2="295"/>
+                  <line x1="350" y1="100" x2="350" y2="280"/>
+                  <line x1="385" y1="120" x2="385" y2="260"/>
+                </g>
+                <g stroke="#6fd7d3" stroke-width="16" stroke-linecap="round">
+                  <line x1="155" y1="190" x2="315" y2="285"/>
+                  <line x1="175" y1="170" x2="335" y2="265"/>
+                  <line x1="285" y1="315" x2="445" y2="410"/>
+                  <line x1="265" y1="335" x2="425" y2="430"/>
+                  <line x1="445" y1="190" x2="285" y2="285"/>
+                  <line x1="425" y1="170" x2="265" y2="265"/>
+                  <line x1="155" y1="410" x2="315" y2="315"/>
+                  <line x1="175" y1="430" x2="335" y2="335"/>
+                </g>
+                <g stroke="url(#gradTeal)" stroke-width="12" opacity="0.9">
+                  <line x1="205" y1="350" x2="205" y2="500"/>
+                  <line x1="240" y1="330" x2="240" y2="520"/>
+                  <line x1="280" y1="315" x2="280" y2="535"/>
+                  <line x1="320" y1="315" x2="320" y2="535"/>
+                  <line x1="360" y1="330" x2="360" y2="520"/>
+                  <line x1="395" y1="350" x2="395" y2="500"/>
+                </g>
+                <g stroke="#8cf3ee" stroke-opacity="0.28" stroke-width="3">
+                  <line x1="195" y1="150" x2="405" y2="150"/>
+                  <line x1="195" y1="190" x2="405" y2="190"/>
+                  <line x1="195" y1="230" x2="405" y2="230"/>
+                  <line x1="195" y1="150" x2="195" y2="240"/>
+                  <line x1="250" y1="130" x2="250" y2="260"/>
+                  <line x1="300" y1="120" x2="300" y2="270"/>
+                  <line x1="350" y1="130" x2="350" y2="260"/>
+                  <line x1="405" y1="150" x2="405" y2="240"/>
+                </g>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SERVICES ============ -->
+    <section class="section" id="services">
+      <div class="container">
+        <span class="eyebrow">Services</span>
+        <h2>Full-lifecycle cable engineering, powered by automation.</h2>
+        <p class="lead">CableTrack provides specialist engineering services across the entire cable project lifecycle &mdash; from early feasibility and consenting through installation and operations &mdash; underpinned by proprietary software that accelerates delivery, improves consistency, and maintains full traceability to recognised industry standards.</p>
+        <div class="cards-9" style="margin-top: 28px;">
+
+          <!-- Row 1: Flagship automated products -->
+          <article class="card card-highlight">
+            <div class="card-icon" style="background: rgba(111,215,211,0.2);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <h3>CBRA Automation <span class="tag-live">Live</span></h3>
+            <p>Automated Cable Burial Risk Assessment built on the OWA CTC835 methodology. AIS ingestion, vessel analysis, anchor penetration risk, burial feasibility, and report generation &mdash; end to end.</p>
+            <ul class="muted-list">
+              <li>OWA methodology with full traceability</li>
+              <li>Automated AIS processing and DWT classification</li>
+              <li>Quantitative anchor strike probability</li>
+              <li>DNV-aligned burial depth assessment</li>
+            </ul>
+          </article>
+          <article class="card card-highlight-purple">
+            <div class="card-icon" style="background: rgba(167,139,250,0.15); color: var(--purple); border-color: rgba(167,139,250,0.25);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            </div>
+            <h3>Layout Optimisation <span class="tag-new">New</span></h3>
+            <p>Multi-algorithm cable layout engine solving inter-array cable routing as a constrained optimisation problem. Connects turbines to substations with minimum cable length while respecting crossing and capacity constraints.</p>
+            <ul class="muted-list">
+              <li>14 routing algorithm streams</li>
+              <li>Hard no-crossing constraint enforcement</li>
+              <li>CBRA cost-surface-aware pathfinding</li>
+              <li>Automated comparison and convergence</li>
+            </ul>
+          </article>
+          <article class="card card-highlight-orange">
+            <div class="card-icon" style="background: rgba(251,146,60,0.15); color: var(--orange); border-color: rgba(251,146,60,0.25);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+            </div>
+            <h3>Programme &amp; CAPEX <span class="tag-new-orange">New</span></h3>
+            <p>Automated installation programme generation with weather-adjusted vessel campaigns and fully itemised CAPEX modelling. Decomposes cable installation into CLV, TSV, and W2W operations with WOW factors from hindcast data.</p>
+            <ul class="muted-list">
+              <li>Vessel campaign decomposition (CLV, TSV, W2W)</li>
+              <li>Weather persistence-adjusted durations</li>
+              <li>Itemised cost build-up and cash flow</li>
+              <li>Monthly programme and cost distribution</li>
+            </ul>
+          </article>
+
+          <!-- Row 2: Consenting, Feasibility & Analytical -->
+          <article class="card card-highlight-orange">
+            <div class="card-icon" style="background: rgba(251,146,60,0.15); color: var(--orange); border-color: rgba(251,146,60,0.25);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <h3>Consenting &amp; Environmental <span class="tag-new-orange">New</span></h3>
+            <p>Automated generation of cable parameters for DCO applications, PIER, and Environmental Statements. Envelope-driven Maximum Design Scenario outputs with receptor conflict analysis, EMF calculations, and full traceability to ES chapter references.</p>
+            <ul class="muted-list">
+              <li>DCO cable parameter envelope generation</li>
+              <li>PIER and ES input calculations</li>
+              <li>EMF assessment and receptor analysis</li>
+              <li>MDS Rochdale envelope compliance</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <h3>Feasibility Studies</h3>
+            <p>Early-stage project feasibility assessments combining desktop review, constraint screening, route viability analysis, and preliminary cost estimation to support investment decisions and consenting strategy.</p>
+            <ul class="muted-list">
+              <li>Route and corridor feasibility</li>
+              <li>Constraint and receptor screening</li>
+              <li>Preliminary cost and programme estimates</li>
+              <li>Consenting risk identification</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+            </div>
+            <h3>Metocean &amp; Persistence</h3>
+            <p>Hindcast analysis tooling for weather window statistics, exceedance curves, and persistence probability tables. Feeds directly into programme scheduling for realistic operational planning.</p>
+            <ul class="muted-list">
+              <li>Hs persistence by threshold and duration</li>
+              <li>Monthly exceedance probability tables</li>
+              <li>Weather window identification</li>
+              <li>Colour-coded risk zone outputs</li>
+            </ul>
+          </article>
+
+          <!-- Row 3: Spatial & Risk -->
+          <article class="card">
+            <div class="card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <h3>GIS &amp; Spatial Analysis</h3>
+            <p>Structured spatial workflows built in ArcGIS Pro for desktop studies, constraint mapping, seabed feature analysis, and defensible engineering decisions grounded in geospatial data.</p>
+            <ul class="muted-list">
+              <li>Constraint and exclusion mapping</li>
+              <li>Seabed and bathymetric analysis</li>
+              <li>Automated layer scoring and review</li>
+              <li>OGC-compliant spatial workflows</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h3>Risk, Burial &amp; Thermal</h3>
+            <p>Quantitative risk assessments for cable burial aligned to DNV RP-0360, including soil province analysis, burial tool feasibility, cable protection strategy, and IEC 60287 thermal rating to determine maximum burial depth against CBRA mechanical requirements.</p>
+            <ul class="muted-list">
+              <li>Burial tool suitability assessment</li>
+              <li>IEC 60287 thermal depth screening</li>
+              <li>Thermal vs. mechanical burial window</li>
+              <li>Cable protection recommendations</li>
+            </ul>
+          </article>
+
+          <!-- Row 4: Delivery services -->
+          <article class="card">
+            <div class="card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+            </div>
+            <h3>Cable Routing &amp; Design</h3>
+            <p>Array cable and export cable route development from concept through detailed design. Automated geometry processing with S-curve generation and fillet arc smoothing for installation-ready cable routes in constrained environments.</p>
+            <ul class="muted-list">
+              <li>Array and export cable routing</li>
+              <li>S-curve and fillet arc geometry</li>
+              <li>Crossing analysis and agreements</li>
+              <li>Constructability-led design logic</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <h3>Desktop Studies</h3>
+            <p>Comprehensive desktop assessments covering environmental, geotechnical, and marine traffic conditions to support route selection and risk identification ahead of survey.</p>
+            <ul class="muted-list">
+              <li>Environmental and seabed review</li>
+              <li>Marine traffic and AIS analysis</li>
+              <li>Geotechnical desk study</li>
+              <li>Hazard and constraint identification</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            </div>
+            <h3>Technical Reporting</h3>
+            <p>Automated and manual report generation for CBRA, burial assessment studies, route selection, and engineering reviews. Every deliverable maintains full methodology traceability.</p>
+            <ul class="muted-list">
+              <li>Automated CBRA report generation</li>
+              <li>Route selection documentation</li>
+              <li>Option comparison outputs</li>
+              <li>Stakeholder-ready visual packages</li>
+            </ul>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CBRA AUTOMATION SHOWCASE ============ -->
+    <section class="section" id="cbra">
+      <div class="container showcase">
+        <div class="panel wireframe">
+          <div class="pipeline-visual">
+            <div class="pipe-stage">
+              <span class="pipe-label">Step 1</span>
+              <span class="pipe-desc">Project setup &mdash; cable routes, KP ranges, assessment areas, config</span>
+              <span class="pipe-badge">Config</span>
+            </div>
+            <div class="pipe-stage">
+              <span class="pipe-label">Step 2</span>
+              <span class="pipe-desc">AIS ingest &mdash; vessel tracks built, SOG filtered, DWT classified</span>
+              <span class="pipe-badge">Data In</span>
+            </div>
+            <div class="pipe-stage active">
+              <span class="pipe-label">Step 3</span>
+              <span class="pipe-desc">Grid build &mdash; fishnet generation, density calculation, soil join</span>
+              <span class="pipe-badge">Processing</span>
+            </div>
+            <div class="pipe-stage">
+              <span class="pipe-label">Step 4</span>
+              <span class="pipe-desc">CBRA calculate &mdash; F_strike, anchor penetration, burial depths</span>
+              <span class="pipe-badge">Risk</span>
+            </div>
+            <div class="pipe-stage">
+              <span class="pipe-label">Step 5</span>
+              <span class="pipe-desc">Results export &mdash; spatial outputs, tables, GIS deliverables</span>
+              <span class="pipe-badge">Export</span>
+            </div>
+            <div class="pipe-stage">
+              <span class="pipe-label">Step 6</span>
+              <span class="pipe-desc">Report generation &mdash; professional CBRA document, full methodology</span>
+              <span class="pipe-badge">Output</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="eyebrow">CBRA Automation Pipeline</span>
+          <h2>From raw AIS data to client-ready CBRA report &mdash; automated.</h2>
+          <p class="lead">Our proprietary six-step pipeline implements the OWA (Offshore Wind Accelerator) CTC835 CBRA methodology as a fully automated, configuration-driven workflow. Every parameter is traceable, every calculation auditable, and every output aligned to DNV RP-0360 burial depth standards.</p>
+          <div class="cards-4" style="margin-top: 24px;">
+            <article class="card">
+              <h3>Live Processing</h3>
+              <p>Assessments run across all project periods &mdash; pre-lay, installation, and operational &mdash; not as one-off studies.</p>
+            </article>
+            <article class="card">
+              <h3>AIS Intelligence</h3>
+              <p>Automated vessel traffic analysis with OWA 5-class DWT classification, SOG filtering, and corridor-based track building.</p>
+            </article>
+            <article class="card">
+              <h3>Quantitative PRA</h3>
+              <p>Annual anchor strike frequency calculated per grid cell using depth-banded probability and vessel transit data.</p>
+            </article>
+            <article class="card">
+              <h3>Config-Driven</h3>
+              <p>No hard-coded parameters. Every assumption configurable, versioned, and locked per project run for full auditability.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LAYOUT OPTIMISATION SHOWCASE ============ -->
+    <section class="section" id="layout">
+      <div class="container showcase-reverse">
+        <div>
+          <span class="eyebrow">Cable Layout Optimisation</span>
+          <h2>Inter-array cable routing solved as a constrained optimisation problem.</h2>
+          <p class="lead">CableTrack models offshore wind cable layout as a multi-depot, capacitated, open vehicle routing problem with hard no-crossing constraints. Our engine runs multiple algorithm streams in parallel to find optimal turbine-to-substation connections that minimise cable length while respecting real-world engineering constraints.</p>
+          <div class="cards-4" style="margin-top: 24px;">
+            <article class="card">
+              <h3>Phase 1: Euclidean</h3>
+              <p>Fast straight-line routing for initial layout exploration and algorithm benchmarking across the full solution space.</p>
+            </article>
+            <article class="card">
+              <h3>Phase 2: Cost-Aware</h3>
+              <p>Grid-based pathfinding over CBRA cost surfaces using Dijkstra, A*, and precomputed routing matrices for seabed-aware layouts.</p>
+            </article>
+            <article class="card">
+              <h3>Constraint Engine</h3>
+              <p>Hard enforcement of no-crossing rules, cable capacity limits, and full turbine allocation. No constraint violations in final output.</p>
+            </article>
+            <article class="card">
+              <h3>Automated Comparison</h3>
+              <p>Master logging, convergence tracking, and visual comparison across all algorithm streams for transparent option selection.</p>
+            </article>
+          </div>
+        </div>
+        <div class="layout-visual">
+          <h3 style="color: var(--text); margin-bottom: 16px; font-size: 0.95rem;">14 Routing Algorithm Streams</h3>
+          <div class="algo-grid">
+            <div class="algo-pill algo-p1"><span class="algo-dot"></span>Voronoi + Nearest Neighbour</div>
+            <div class="algo-pill algo-p1"><span class="algo-dot"></span>MST Forest</div>
+            <div class="algo-pill algo-p1"><span class="algo-dot"></span>Cluster First / Route Second</div>
+            <div class="algo-pill algo-p2"><span class="algo-dot"></span>Classic OSS-Outward</div>
+            <div class="algo-pill algo-p2"><span class="algo-dot"></span>Reverse Turbine-to-OSS</div>
+            <div class="algo-pill algo-p2"><span class="algo-dot"></span>Giant Tour</div>
+            <div class="algo-pill algo-p3"><span class="algo-dot"></span>Rip-Up &amp; Reroute</div>
+            <div class="algo-pill algo-p3"><span class="algo-dot"></span>Ant Colony Optimisation</div>
+            <div class="algo-pill algo-p3"><span class="algo-dot"></span>Steiner Tree Junctions</div>
+            <div class="algo-pill algo-p3"><span class="algo-dot"></span>Enumeration</div>
+            <div class="algo-pill algo-p4"><span class="algo-dot"></span>A* / Maze Routing</div>
+            <div class="algo-pill algo-p4"><span class="algo-dot"></span>Cable Trench Problem</div>
+            <div class="algo-pill algo-p4"><span class="algo-dot"></span>Physarum Solver</div>
+            <div class="algo-pill algo-p4"><span class="algo-dot"></span>Force-Directed Model</div>
+          </div>
+          <div class="algo-legend">
+            <span><span class="dot" style="background: var(--accent);"></span> Priority 1</span>
+            <span><span class="dot" style="background: var(--warn);"></span> Priority 2</span>
+            <span><span class="dot" style="background: var(--purple);"></span> Priority 3</span>
+            <span><span class="dot" style="background: #f87171;"></span> Priority 4-5</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROGRAMME & CAPEX SHOWCASE ============ -->
+    <section class="section" id="programme">
+      <div class="container showcase">
+        <div class="programme-visual">
+          <h3 style="color: var(--text); margin-bottom: 4px; font-size: 0.95rem;">Installation Programme &mdash; Vessel Campaigns</h3>
+          <div class="prog-row">
+            <span class="prog-vessel">CLV</span>
+            <div class="prog-bar-track"><div class="prog-bar clv">Cable Lay &mdash; Pull-in, Laying, Protection</div></div>
+          </div>
+          <div class="prog-row">
+            <span class="prog-vessel">TSV</span>
+            <div class="prog-bar-track"><div class="prog-bar tsv">Trenching &mdash; Post-Lay Burial</div></div>
+          </div>
+          <div class="prog-row">
+            <span class="prog-vessel">W2W</span>
+            <div class="prog-bar-track"><div class="prog-bar w2w">Terminations</div></div>
+          </div>
+          <div class="prog-row">
+            <span class="prog-vessel" style="color: var(--muted);">WOW</span>
+            <div class="prog-bar-track"><div class="prog-bar wow">Weather Standby</div></div>
+          </div>
+          <div class="prog-arrow">Hindcast persistence data &rarr; WOW factors &rarr; Adjusted durations</div>
+          <div class="prog-flow">
+            <div class="prog-flow-item">
+              <strong>Programme</strong>
+              <span>P0 schedule by vessel with weather-adjusted durations</span>
+            </div>
+            <div class="prog-flow-item">
+              <strong>CAPEX</strong>
+              <span>Itemised cost build-up: charter, fuel, crew, materials</span>
+            </div>
+            <div class="prog-flow-item">
+              <strong>Cash Flow</strong>
+              <span>Monthly cost distribution across project timeline</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <span class="eyebrow">Programme &amp; CAPEX Modelling</span>
+          <h2>From cable schedule to costed programme &mdash; weather-adjusted.</h2>
+          <p class="lead">Our programme engine decomposes cable installation into vessel-specific campaigns &mdash; CLV laying, TSV burial, and W2W terminations &mdash; then applies hindcast-derived weather persistence factors to produce realistic, weather-adjusted P0 programmes. The CAPEX model builds fully itemised cost estimates from charter rates, fuel, crew, materials, and logistics, with monthly cash flow distribution.</p>
+          <div class="cards-4" style="margin-top: 24px;">
+            <article class="card">
+              <h3>Vessel Campaigns</h3>
+              <p>Cable installation decomposed into CLV, TSV, and W2W operations with sub-task durations validated against ODOW baseline data.</p>
+            </article>
+            <article class="card">
+              <h3>Weather Adjustment</h3>
+              <p>Hindcast Hs persistence analysis applied to uninterruptible and interruptible operations for realistic WOW (Waiting on Weather) factors.</p>
+            </article>
+            <article class="card">
+              <h3>Itemised CAPEX</h3>
+              <p>Cost build-up by vessel day type: operational, transit, standby. Includes charter, fuel, crew, consumables, mobilisation, and port charges.</p>
+            </article>
+            <article class="card">
+              <h3>Cash Flow</h3>
+              <p>Monthly cost distribution across the full project timeline, with cable material costs broken down by cross-sectional area.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PLATFORM & SERVICE TIERS ============ -->
+    <section class="section" id="platform">
+      <div class="container">
+        <span class="eyebrow">Platform</span>
+        <h2>Engineering consultancy backed by a scalable technology platform.</h2>
+        <p class="lead">CableTrack combines hands-on cable engineering expertise with proprietary software infrastructure. Our platform delivers consistent, auditable outputs whether you need a feasibility study, consenting inputs, a CBRA, a layout study, a costed programme, or an ongoing subscription across multiple projects.</p>
+        <div class="tier-grid">
+          <div class="tier">
+            <h3 style="color: var(--accent);">Fresh CBRA</h3>
+            <p>New Cable Burial Risk Assessment from raw data through to professional report delivery.</p>
+          </div>
+          <div class="tier">
+            <h3 style="color: var(--accent);">CBRA Rerun</h3>
+            <p>Independent verification or replication of an existing CBRA using our automated pipeline.</p>
+          </div>
+          <div class="tier">
+            <h3 style="color: var(--accent);">CBRA Update</h3>
+            <p>Incremental update to an existing assessment with new AIS data or revised project parameters.</p>
+          </div>
+          <div class="tier">
+            <h3 style="color: var(--orange);">Consenting Inputs</h3>
+            <p>DCO cable parameter envelopes, PIER and ES inputs, EMF calculations, and receptor analysis.</p>
+          </div>
+          <div class="tier">
+            <h3 style="color: var(--orange);">Programme &amp; CAPEX</h3>
+            <p>Weather-adjusted installation programme with fully itemised cost estimate and cash flow.</p>
+          </div>
+          <div class="tier">
+            <h3 style="color: var(--purple);">Dashboard Access</h3>
+            <p>Subscription-based access to project dashboards, monitoring, and ongoing engineering support.</p>
+          </div>
+        </div>
+        <div class="standards-bar">
+          <span class="standard-badge">ISO 9001:2015</span>
+          <span class="standard-badge">ISO/IEC 12207:2017</span>
+          <span class="standard-badge">DNV RP-0360</span>
+          <span class="standard-badge">OWA CTC835</span>
+          <span class="standard-badge">IEC 60287</span>
+          <span class="standard-badge">OGC GIS Compliance</span>
+          <span class="standard-badge">GDPR Compliant</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROCESS ============ -->
+    <section class="section" id="process">
+      <div class="container">
+        <span class="eyebrow">How We Work</span>
+        <h2>A clear process built around your project timeline.</h2>
+        <p class="lead">Every engagement follows a structured methodology aligned to recognised industry standards. Whether it's a feasibility study, consenting inputs, CBRA, layout optimisation, costed programme, or full desktop assessment, the approach is consistent and the outputs are traceable.</p>
+        <div class="process-grid" style="margin-top: 28px;">
+          <article class="card process-step">
+            <div class="step-number">1</div>
+            <h3>Scope</h3>
+            <p>Define the project area, cable routes, assessment requirements, and available data. Agree deliverables, programme, and applicable standards.</p>
+          </article>
+          <article class="card process-step">
+            <div class="step-number">2</div>
+            <h3>Ingest</h3>
+            <p>Load and validate project data &mdash; AIS records, survey data, seabed conditions, hindcast metocean, cable schedules, constraint information, and consenting parameters.</p>
+          </article>
+          <article class="card process-step">
+            <div class="step-number">3</div>
+            <h3>Analyse</h3>
+            <p>Run automated analyses: vessel traffic, risk assessment, burial feasibility, layout optimisation, weather persistence, programme scheduling, and consenting parameter generation.</p>
+          </article>
+          <article class="card process-step">
+            <div class="step-number">4</div>
+            <h3>Assess</h3>
+            <p>Apply engineering judgement to automated outputs. Review risk levels, layout options, programme durations, cost estimates, and route trade-offs.</p>
+          </article>
+          <article class="card process-step">
+            <div class="step-number">5</div>
+            <h3>Report</h3>
+            <p>Generate professional deliverables &mdash; CBRA reports, layout comparisons, costed programmes, consenting inputs, PIER/ES cable chapters, and visual outputs.</p>
+          </article>
+          <article class="card process-step">
+            <div class="step-number">6</div>
+            <h3>Support</h3>
+            <p>Ongoing engineering support through installation and operations. Update assessments, rerun programmes with new data, and adapt to changing conditions.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SECTORS ============ -->
+    <section class="section" id="sectors">
+      <div class="container">
+        <span class="eyebrow">Sectors &amp; Applications</span>
+        <h2>Specialist cable engineering across energy, telecoms, and insurance.</h2>
+        <div class="cards-4" style="margin-top: 28px;">
+          <article class="card">
+            <h3>Offshore Wind</h3>
+            <p>Feasibility, consenting inputs, cable routing, layout optimisation, CBRA, installation programme, and CAPEX modelling for fixed and floating developments.</p>
+            <ul class="muted-list">
+              <li>Feasibility and DCO consenting inputs</li>
+              <li>Layout optimisation and routing</li>
+              <li>Burial risk assessment</li>
+              <li>Programme and cost modelling</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Submarine Telecoms</h3>
+            <p>Route development and CBRA for long-distance submarine telecommunications cables, including transoceanic systems and shore-end approaches.</p>
+            <ul class="muted-list">
+              <li>Transoceanic route development</li>
+              <li>Shore-end engineering</li>
+              <li>Cable protection studies</li>
+              <li>Repair assessments</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Power Interconnectors</h3>
+            <p>Route assessment, risk analysis, and installation planning for HVDC and HVAC interconnector cables, supporting consenting through operational phases.</p>
+            <ul class="muted-list">
+              <li>Corridor and route selection</li>
+              <li>CBRA and BAS delivery</li>
+              <li>Installation programme and CAPEX</li>
+              <li>Post-installation assessment</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Marine Insurance</h3>
+            <p>Data-driven risk quantification to support underwriting, claims assessment, and liability analysis for submarine cable assets. Cable faults remain one of the leading causes of offshore wind insurance claims.</p>
+            <ul class="muted-list">
+              <li>Risk quantification and scoring</li>
+              <li>Claims evidence and analysis</li>
+              <li>Liability assessment support</li>
+              <li>Asset condition monitoring</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="section" id="about">
+      <div class="container cards-3">
+        <article class="card" style="grid-column: span 2;">
+          <span class="eyebrow">About CableTrack</span>
+          <h2 style="margin-top: 14px;">Engineering expertise, accelerated by technology.</h2>
+          <p class="lead">CableTrack is a UK-based cable engineering platform and specialist consultancy built around the principle that better tools produce better outcomes. Our proprietary automation delivers feasibility studies, consenting inputs, CBRA, layout optimisation, programme scheduling, and cost modelling services that are faster, more consistent, and fully traceable &mdash; while maintaining the engineering rigour that clients and regulators require.</p>
+          <p>Founded by engineers with direct experience in submarine cable routing, burial assessment, and offshore wind development, CableTrack understands both the technical detail and the commercial reality of complex cable projects. With cable faults continuing to account for a significant proportion of offshore energy insurance claims, we believe the industry needs smarter, more consistent approaches to cable risk management and project cost control &mdash; and that automation is the way to deliver them.</p>
+        </article>
+        <article class="card">
+          <span class="eyebrow">Why CableTrack</span>
+          <ul class="muted-list" style="margin-top: 18px;">
+            <li>Automated CBRA pipeline &mdash; weeks to hours</li>
+            <li>14-stream cable layout optimisation engine</li>
+            <li>Weather-adjusted programme and CAPEX</li>
+            <li>DCO consenting inputs and ES cable chapters</li>
+            <li>Array and export cable routing with geometry</li>
+            <li>IEC 60287 thermal rating framework</li>
+            <li>OWA CTC835 and DNV RP-0360 aligned</li>
+            <li>Configuration-driven, fully auditable</li>
+            <li>ISO 9001 quality management system</li>
+            <li>Professional, client-ready deliverables</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ CTA ============ -->
+    <section class="section">
+      <div class="container">
+        <div class="cta-band">
+          <div>
+            <span class="eyebrow">Get Started</span>
+            <h2 style="margin-top: 14px;">See what automated cable engineering looks like for your project.</h2>
+            <p class="lead" style="max-width: 700px;">Whether you need a CBRA, a cable layout study, a costed installation programme, route development support, or a full desktop assessment, we can scope a solution around your timeline and data.</p>
+          </div>
+          <a class="btn btn-primary" href="#contact">Book a Call</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="section" id="contact">
+      <div class="container footer-grid">
+        <div class="card">
+          <span class="eyebrow">Contact</span>
+          <h2 style="margin-top: 14px;">Let's talk about your cable project.</h2>
+          <p>Get in touch to discuss CBRA, layout optimisation, programme and CAPEX modelling, route development, or any cable engineering requirements.</p>
+          <p><strong>Email:</strong> <a href="mailto:hello@cabletrack.co.uk" style="color: var(--accent);">hello@cabletrack.co.uk</a><br>
+          <strong>Phone:</strong> <a href="tel:+447916986132" style="color: var(--accent);">07916 986 132</a><br>
+          <strong>Location:</strong> United Kingdom</p>
+        </div>
+        <div class="card">
+          <h3>Quick Enquiry</h3>
+          <form class="contact-form" onsubmit="event.preventDefault(); alert('Thank you for your enquiry. We will be in touch shortly.');">
+            <input class="input" type="text" placeholder="Your name" required />
+            <input class="input" type="email" placeholder="Your email" required />
+            <input class="input" type="text" placeholder="Company" />
+            <textarea placeholder="Tell us about your project or requirements"></textarea>
+            <button class="btn btn-primary" type="submit">Send Enquiry</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+      <span>&copy; <span id="year"></span> CableTrack Ltd. All rights reserved.</span>
+      <span class="small">Cable engineering platform &amp; specialist consultancy &mdash; United Kingdom</span>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('topNav').classList.toggle('open');
+    }
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
