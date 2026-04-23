@@ -393,11 +393,16 @@
     }
 
     .contact-form { display: grid; gap: 14px; }
-    .input, textarea {
+    .input, textarea, .select-dept {
       width: 100%; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);
       background: rgba(255,255,255,0.03); color: var(--text);
       padding: 14px 16px; font: inherit;
     }
+    .select-dept { appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236fd7d3' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 16px center; cursor: pointer;
+    }
+    .select-dept option { background: #0e1a1f; color: var(--text); }
     textarea { min-height: 120px; resize: vertical; }
 
     /* Highlight cards */
@@ -819,8 +824,7 @@
         <div>
           <span class="eyebrow">Cable Layout Optimisation</span>
           <h2>Inter-array cable routing solved as a constrained optimisation problem.</h2>
-          <p class="lead">CableTrack models offshore wind cable layout as a multi-depot, capacitated, open vehicle routing problem with hard no-crossing constraints. Our engine runs multiple algorithm streams in parallel to find optimal turbine-to-substation connections that minimise cable length while respecting real-world engineering constraints.</p>
-          <div class="cards-4" style="margin-top: 24px;">
+          <p class="lead">CableTrack models offshore wind cable layout as a multi-depot, capacitated, open vehicle routing problem with hard no-crossing constraints. Our engine runs multiple algorithm streams in parallel to find optimal turbine-to-substation connections that minimise cable length while respecting real-world engineering constraints.</p>          <div class="cards-4" style="margin-top: 24px;">
             <article class="card">
               <h3>Phase 1: Euclidean</h3>
               <p>Fast straight-line routing for initial layout exploration and algorithm benchmarking across the full solution space.</p>
@@ -1119,11 +1123,19 @@
         </div>
         <div class="card">
           <h3>Quick Enquiry</h3>
-          <form class="contact-form" onsubmit="event.preventDefault(); alert('Thank you for your enquiry. We will be in touch shortly.');">
-            <input class="input" type="text" placeholder="Your name" required />
-            <input class="input" type="email" placeholder="Your email" required />
-            <input class="input" type="text" placeholder="Company" />
-            <textarea placeholder="Tell us about your project or requirements"></textarea>
+          <form class="contact-form" id="enquiryForm">
+            <select class="select-dept" id="deptSelect" required>
+              <option value="" disabled selected>Select department</option>
+              <option value="enquiries">General Enquiries</option>
+              <option value="engineering">Engineering</option>
+              <option value="commercial">Commercial</option>
+              <option value="projects">Projects</option>
+              <option value="support">Support</option>
+            </select>
+            <input class="input" type="text" id="formName" placeholder="Your name" required />
+            <input class="input" type="email" id="formEmail" placeholder="Your email" required />
+            <input class="input" type="text" id="formCompany" placeholder="Company" />
+            <textarea id="formMessage" placeholder="Tell us about your project or requirements"></textarea>
             <button class="btn btn-primary" type="submit">Send Enquiry</button>
           </form>
         </div>
@@ -1143,6 +1155,45 @@
       document.getElementById('topNav').classList.toggle('open');
     }
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    /* Enquiry form handler */
+    document.getElementById('enquiryForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var dept = document.getElementById('deptSelect').value;
+      var name = document.getElementById('formName').value;
+      var email = document.getElementById('formEmail').value;
+      var company = document.getElementById('formCompany').value;
+      var message = document.getElementById('formMessage').value;
+
+      var deptEmails = {
+        enquiries: 'enquiries@cabletrack.co.uk',
+        engineering: 'engineering@cabletrack.co.uk',
+        commercial: 'commercial@cabletrack.co.uk',
+        projects: 'projects@cabletrack.co.uk',
+        support: 'support@cabletrack.co.uk'
+      };
+
+      var deptLabels = {
+        enquiries: 'General Enquiries',
+        engineering: 'Engineering',
+        commercial: 'Commercial',
+        projects: 'Projects',
+        support: 'Support'
+      };
+
+      var to = deptEmails[dept];
+      var subject = 'Website Enquiry (' + deptLabels[dept] + ') from ' + name;
+      var body = 'Name: ' + name + '\n'
+        + 'Email: ' + email + '\n'
+        + (company ? 'Company: ' + company + '\n' : '')
+        + 'Department: ' + deptLabels[dept] + '\n\n'
+        + (message || '');
+
+      window.location.href = 'mailto:' + encodeURIComponent(to)
+        + '?subject=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(body);
+    });
   </script>
 </body>
 </html>
+
