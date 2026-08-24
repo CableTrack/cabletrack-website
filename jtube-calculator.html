@@ -258,6 +258,25 @@
     .note-box strong { color: var(--warn); }
     .disclaimer { margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); font-size: 0.76rem; color: var(--muted); }
 
+    /* Export modal */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 50;
+      background: rgba(3,7,10,0.72);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-box {
+      position: relative;
+      width: min(100%, 480px);
+      max-height: 88vh; overflow-y: auto;
+      background: linear-gradient(180deg, #132331, #0e1b26);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    }
+
     footer { padding: 28px 0 50px; color: var(--muted); border-top: 1px solid rgba(255,255,255,0.06); }
     .small { font-size: 0.92rem; }
 
@@ -406,6 +425,8 @@
               </div>
             </div>
 
+            <button type="button" class="btn btn-secondary" id="openExportBtn" style="width:100%; margin-top: 16px;">✉ Export Results via Email</button>
+
             <h4 style="margin-top: 18px;">Section Breakdown</h4>
             <table class="breakdown-table" id="breakdownTable">
               <thead><tr><th>Section</th><th class="num">Tension</th><th class="num">Cumulative</th></tr></thead>
@@ -417,12 +438,68 @@
             <div class="disclaimer">
               <strong>Methodology:</strong> straight sections use the pull force F = W·(μ·cosθ + sinθ); confined curved sections add bending moment (EI/r) amplified by Eytelwein capstan friction (e^{μφ}) on the running cumulative tension, plus suspended arc weight; unconfined (free) bends add only suspended arc weight. Torsion uses J·Φ divided by the torsionally-restrained cable length. This is an indicative estimate only — verify against a full site-specific calculation before specifying winch or installation equipment capacity.
             </div>
+
           </div>
 
         </div>
       </div>
     </section>
   </main>
+
+  <!-- ============ EXPORT MODAL ============ -->
+  <div class="modal-overlay" id="exportOverlay" style="display:none;">
+    <div class="modal-box">
+      <button type="button" class="icon-btn" id="closeExportBtn" style="position:absolute; top:16px; right:16px;" aria-label="Close">✕</button>
+
+      <div id="exportFormView">
+        <h3 style="margin-bottom: 6px;">Export This Calculation</h3>
+        <p style="font-size: 0.88rem; margin-bottom: 18px;">Leave a few details and we'll open a pre-filled email in your own mail client with the full calculation — inputs, section breakdown, and recommended winch SWL — ready to send or save.</p>
+
+        <form id="exportForm">
+          <div class="field-row full-row" style="grid-template-columns: 1fr; margin-bottom: 12px;">
+            <div>
+              <label for="expName" style="display:block; margin-bottom: 6px;">Name *</label>
+              <input class="input" type="text" id="expName" required />
+            </div>
+          </div>
+          <div class="field-row full-row" style="grid-template-columns: 1fr; margin-bottom: 12px;">
+            <div>
+              <label for="expCompany" style="display:block; margin-bottom: 6px;">Company</label>
+              <input class="input" type="text" id="expCompany" />
+            </div>
+          </div>
+          <div class="field-row full-row" style="grid-template-columns: 1fr; margin-bottom: 12px;">
+            <div>
+              <label for="expPosition" style="display:block; margin-bottom: 6px;">Position</label>
+              <input class="input" type="text" id="expPosition" />
+            </div>
+          </div>
+          <div class="field-row full-row" style="grid-template-columns: 1fr; margin-bottom: 14px;">
+            <div>
+              <label for="expEmail" style="display:block; margin-bottom: 6px;">Email *</label>
+              <input class="input" type="email" id="expEmail" required />
+            </div>
+          </div>
+
+          <div class="checkbox-row" style="align-items: flex-start;">
+            <input type="checkbox" id="expConsent" style="margin-top: 3px;" required />
+            <label for="expConsent" style="font-size: 0.8rem;">Your details will be sent to CableTrack and may be used to follow up about this tool. We won't share them with third parties. Unticking this means you can still view your result on-screen, but we can't send you the export.</label>
+          </div>
+
+          <div id="exportError" style="display:none; color: var(--danger); font-size: 0.82rem; margin-top: 10px;"></div>
+
+          <button type="submit" class="btn btn-primary" id="exportSubmitBtn" style="width:100%; margin-top: 16px;">Send My Export</button>
+        </form>
+      </div>
+
+      <div id="exportSuccessView" style="display:none;">
+        <h3 style="margin-bottom: 10px;">Done — check your email client</h3>
+        <p style="font-size: 0.9rem; margin-bottom: 0;">We've opened a pre-filled email with your calculation. If nothing opened, your browser may have blocked it — you can copy the summary below instead.</p>
+        <textarea id="exportSummaryText" readonly style="width:100%; min-height: 220px; margin-top: 14px; font-family: monospace; font-size: 0.78rem;"></textarea>
+        <button type="button" class="btn btn-secondary" id="closeExportSuccessBtn" style="width:100%; margin-top: 14px;">Close</button>
+      </div>
+    </div>
+  </div>
 
   <footer>
     <div class="container" style="display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;">
@@ -442,6 +519,7 @@
 
     let nextId = 1;
     let sectionOrder = []; // [{id, type}]
+    let lastCalcState = null;
 
     function newId() { return nextId++; }
 
@@ -837,6 +915,17 @@
       }
 
       drawDiagram(segments, seaSurface);
+
+      // Store latest result for export
+      lastCalcState = {
+        hasSections: sectionOrder.length > 0,
+        rows: rows,
+        sigmaTorsion: sigmaTorsion,
+        sigmaTotal: sigmaTotal,
+        fos: fos,
+        winchSWL_kN: winchSWL_kN,
+        names: names
+      };
     }
 
     // ---------- Diagram rendering ----------
@@ -1011,6 +1100,126 @@
     }
 
     document.getElementById('resetBtn').addEventListener('click', function () { resetToBaseCase(false); });
+
+    // ---------- Export via email ----------
+    const WEB3FORMS_KEY = 'd4909213-95a6-4f97-894f-730584024d6b';
+
+    function buildSummaryText() {
+      if (!lastCalcState || !lastCalcState.hasSections) return 'No calculation available — add sections and calculate first.';
+
+      const lines = [];
+      lines.push('J-TUBE PULL-IN FORCE CALCULATOR — RESULT SUMMARY');
+      lines.push('Generated: ' + new Date().toLocaleString());
+      lines.push('Source: CableTrack (https://cabletrack.co.uk/jtube-calculator.html)');
+      lines.push('');
+      lines.push('GLOBAL PARAMETERS');
+      lines.push('Cable weight in air: ' + num('omegaAir') + ' kg/m');
+      lines.push('Cable weight in water: ' + num('omegaWater') + ' kg/m');
+      lines.push('Cable outside diameter: ' + num('cableOD') + ' mm');
+      lines.push('J-tube inner diameter: ' + num('jtubeID') + ' mm');
+      lines.push('Cable bending stiffness (EI): ' + num('cableEI') + ' kN.m2');
+      lines.push('Torsional stiffness (J): ' + num('cableJ') + ' kN.m2/deg');
+      lines.push('Starting / lay tension: ' + num('layTension') + ' tonnes');
+      lines.push('Plan-view twist angle (Phi): ' + num('planPhi') + ' deg');
+      lines.push('');
+      lines.push('SECTION BREAKDOWN');
+      lastCalcState.rows.forEach(r => {
+        lines.push('- ' + r.label + ': ' + r.tension.toFixed(2) + ' kN (cumulative ' + r.cum.toFixed(2) + ' kN)');
+      });
+      lines.push('- Torsion: ' + lastCalcState.sigmaTorsion.toFixed(2) + ' kN');
+      lines.push('');
+      lines.push('TOTAL EXPECTED STATIC PULL-IN LOAD: ' + lastCalcState.sigmaTotal.toFixed(2) + ' kN (' + (lastCalcState.sigmaTotal / g).toFixed(2) + ' tonnes-force)');
+      lines.push('');
+      lines.push('WINCH SELECTION');
+      lines.push('Factor of Safety applied: ' + lastCalcState.fos + '×');
+      lines.push('Recommended minimum winch SWL: ' + lastCalcState.winchSWL_kN.toFixed(1) + ' kN (' + (lastCalcState.winchSWL_kN / g).toFixed(2) + ' tonnes)');
+      lines.push('');
+      lines.push('This is an indicative engineering estimate only. Verify against a full site-specific calculation before specifying winch or installation equipment capacity.');
+      return lines.join('\n');
+    }
+
+    function openExportModal() {
+      document.getElementById('exportFormView').style.display = '';
+      document.getElementById('exportSuccessView').style.display = 'none';
+      document.getElementById('exportError').style.display = 'none';
+      document.getElementById('exportOverlay').style.display = 'flex';
+    }
+    function closeExportModal() {
+      document.getElementById('exportOverlay').style.display = 'none';
+    }
+
+    document.getElementById('openExportBtn').addEventListener('click', function () {
+      if (!lastCalcState || !lastCalcState.hasSections) {
+        window.alert('Add at least one section and calculate a result before exporting.');
+        return;
+      }
+      openExportModal();
+    });
+    document.getElementById('closeExportBtn').addEventListener('click', closeExportModal);
+    document.getElementById('closeExportSuccessBtn').addEventListener('click', closeExportModal);
+    document.getElementById('exportOverlay').addEventListener('click', function (e) {
+      if (e.target === this) closeExportModal();
+    });
+
+    document.getElementById('exportForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const errorEl = document.getElementById('exportError');
+      errorEl.style.display = 'none';
+
+      const name = document.getElementById('expName').value.trim();
+      const company = document.getElementById('expCompany').value.trim();
+      const position = document.getElementById('expPosition').value.trim();
+      const email = document.getElementById('expEmail').value.trim();
+      const consent = document.getElementById('expConsent').checked;
+
+      if (!name || !email) { errorEl.textContent = 'Please fill in your name and email.'; errorEl.style.display = 'block'; return; }
+      if (!consent) { errorEl.textContent = 'Please tick the box to confirm you\'re happy for us to use your details, or close this window to keep just viewing your result.'; errorEl.style.display = 'block'; return; }
+
+      const summary = buildSummaryText();
+      const btn = document.getElementById('exportSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      const formData = new FormData();
+      formData.append('access_key', WEB3FORMS_KEY);
+      formData.append('subject', 'J-Tube Calculator export — ' + name + (company ? ' (' + company + ')' : ''));
+      formData.append('from_name', 'CableTrack J-Tube Calculator');
+      formData.append('name', name);
+      formData.append('company', company);
+      formData.append('position', position);
+      formData.append('email', email);
+      formData.append('message', summary);
+
+      fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+          // Regardless of Web3Forms outcome, give the visitor their own copy via mailto —
+          // the lead record is a bonus for CableTrack, not a blocker for the visitor's export.
+          const subject = encodeURIComponent('My J-Tube Pull-In Calculation Result');
+          const body = encodeURIComponent(summary);
+          const mailtoLink = 'mailto:' + encodeURIComponent(email) + '?subject=' + subject + '&body=' + body;
+
+          document.getElementById('exportSummaryText').value = summary;
+          document.getElementById('exportFormView').style.display = 'none';
+          document.getElementById('exportSuccessView').style.display = '';
+
+          window.location.href = mailtoLink;
+        })
+        .catch(() => {
+          // Even if the lead POST fails, still give them their export
+          const subject = encodeURIComponent('My J-Tube Pull-In Calculation Result');
+          const body = encodeURIComponent(summary);
+          const mailtoLink = 'mailto:' + encodeURIComponent(email) + '?subject=' + subject + '&body=' + body;
+          document.getElementById('exportSummaryText').value = summary;
+          document.getElementById('exportFormView').style.display = 'none';
+          document.getElementById('exportSuccessView').style.display = '';
+          window.location.href = mailtoLink;
+        })
+        .finally(() => {
+          btn.disabled = false;
+          btn.textContent = 'Send My Export';
+        });
+    });
 
     // ---------- Init ----------
     loadDefaultPreset();
