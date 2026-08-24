@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>J-Tube Pull-In Force Calculator | CableTrack</title>
+  <meta name="description" content="Free customisable J-tube cable pull-in force calculator. Build your own section-by-section J-tube profile, choose straight or curved sections, and get a scale diagram plus estimated static pull-in tension." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://cabletrack.co.uk/jtube-calculator.html" />
+  <style>
+    :root {
+      --bg: #081018;
+      --bg-2: #0c1721;
+      --panel: #101d28;
+      --panel-2: #132331;
+      --line: rgba(125, 223, 220, 0.18);
+      --text: #eaf4f7;
+      --muted: #aabdc7;
+      --accent: #6fd7d3;
+      --accent-2: #2f8fa2;
+      --white: #ffffff;
+      --max: 1320px;
+      --radius: 20px;
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+      --warn: #f0b957;
+      --purple: #a78bfa;
+      --orange: #fb923c;
+      --danger: #f87171;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(180deg, rgba(111,215,211,0.05), transparent 18%),
+        linear-gradient(135deg, #071018 0%, #0c1620 48%, #081018 100%);
+      line-height: 1.5;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    .container { width: min(calc(100% - 2rem), var(--max)); margin: 0 auto; }
+    .section { padding: 48px 0; }
+    .eyebrow {
+      display: inline-block;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--accent);
+      background: rgba(111,215,211,0.08);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, h4 { margin: 0 0 14px; line-height: 1.1; }
+    h1 { font-size: clamp(2rem, 4.2vw, 3rem); letter-spacing: -0.03em; }
+    h2 { font-size: clamp(1.4rem, 2.6vw, 1.8rem); letter-spacing: -0.02em; }
+    h3 { font-size: 1.05rem; }
+    h4 { font-size: 0.92rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 10px; }
+    p { margin: 0 0 16px; color: var(--muted); }
+    .lead { font-size: clamp(1rem, 1.5vw, 1.1rem); max-width: 780px; }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 46px; padding: 0 20px; border-radius: 12px;
+      font-weight: 600; transition: 0.2s ease; border: 1px solid transparent;
+      cursor: pointer; font-size: 0.95rem; font-family: inherit;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #8af0ec);
+      color: #062028;
+      box-shadow: 0 10px 30px rgba(111,215,211,0.25);
+    }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-secondary {
+      border-color: var(--line);
+      background: rgba(255,255,255,0.02);
+      color: var(--text);
+    }
+    .btn-small { min-height: 34px; padding: 0 12px; font-size: 0.8rem; border-radius: 9px; }
+    .btn-danger { border-color: rgba(248,113,113,0.3); color: var(--danger); background: rgba(248,113,113,0.06); }
+    .btn-ghost { border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); color: var(--muted); }
+
+    header {
+      position: sticky; top: 0; z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(8, 16, 24, 0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      min-height: 74px; gap: 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 14px; font-weight: 700; letter-spacing: 0.01em; }
+    .brand-mark {
+      width: 42px; height: 42px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        linear-gradient(135deg, rgba(111,215,211,0.2), rgba(47,143,162,0.08)),
+        #0d1620;
+      display: grid; place-items: center; overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    }
+    .brand-mark svg { width: 28px; height: 28px; }
+    .nav-links {
+      display: flex; align-items: center; gap: 24px; color: var(--muted); font-size: 0.96rem;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { display: flex; align-items: center; gap: 12px; }
+    .menu-toggle {
+      display: none; background: transparent; color: var(--text); border: 1px solid var(--line);
+      padding: 10px 12px; border-radius: 12px;
+    }
+
+    .hero { padding: 48px 0 8px; }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    /* Diagram panel */
+    .diagram-panel { margin-bottom: 24px; }
+    .diagram-svg-wrap {
+      background: linear-gradient(180deg, #0e1924 0%, #0a131c 100%);
+      border-radius: 16px; border: 1px solid rgba(255,255,255,0.06);
+      padding: 12px; overflow: hidden;
+    }
+    .diagram-svg-wrap svg { width: 100%; height: auto; display: block; max-height: 460px; }
+    .diagram-legend {
+      display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 14px; font-size: 0.8rem; color: var(--muted);
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+    /* Layout */
+    .calc-layout {
+      display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; align-items: start;
+    }
+    .panel-sticky { position: sticky; top: 96px; }
+
+    /* Global fields */
+    .field-group {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .field-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .field-row {
+      display: grid; grid-template-columns: 1fr 110px; gap: 10px; align-items: center;
+      margin-bottom: 10px;
+    }
+    .field-row label { font-size: 0.86rem; color: var(--text); }
+    .field-hint { display: block; font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+    .input, select, textarea {
+      width: 100%; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03); color: var(--text);
+      padding: 9px 11px; font: inherit; font-size: 0.88rem;
+    }
+    select {
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236fd7d3' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; cursor: pointer;
+      padding-right: 28px;
+    }
+    select option { background: #0e1a1f; color: var(--text); }
+    .checkbox-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .checkbox-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); }
+    .checkbox-row label { font-size: 0.84rem; color: var(--muted); }
+
+    /* Section list */
+    #sectionList { display: grid; gap: 14px; margin-bottom: 16px; }
+    .section-card {
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.025);
+      overflow: hidden;
+      border-left: 4px solid var(--accent);
+    }
+    .section-card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 14px; background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .section-card-title { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.92rem; }
+    .section-card-dot { width: 10px; height: 10px; border-radius: 3px; }
+    .section-card-controls { display: flex; gap: 6px; }
+    .icon-btn {
+      width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted); cursor: pointer; font-size: 0.85rem;
+    }
+    .icon-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.18); }
+    .icon-btn.danger:hover { color: var(--danger); border-color: rgba(248,113,113,0.3); }
+    .section-card-body { padding: 14px; }
+    .type-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+
+    .add-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .derived-note {
+      font-size: 0.76rem; color: var(--accent); background: rgba(111,215,211,0.06);
+      border: 1px solid rgba(111,215,211,0.15); border-radius: 8px; padding: 6px 10px; margin-top: 4px;
+    }
+
+    /* Results */
+    .result-hero {
+      text-align: center; padding: 20px; border-radius: 16px;
+      background: linear-gradient(135deg, rgba(111,215,211,0.13), rgba(47,143,162,0.08));
+      border: 1px solid rgba(111,215,211,0.2);
+      margin-bottom: 18px;
+    }
+    .result-value-row { display: flex; align-items: baseline; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .result-value { font-size: clamp(1.9rem, 4.5vw, 2.5rem); font-weight: 800; color: var(--accent); letter-spacing: -0.02em; line-height: 1; }
+    .result-value small { font-size: 0.4em; font-weight: 600; color: var(--muted); margin-left: 6px; }
+    .result-value-divider { font-size: clamp(1.2rem, 2.5vw, 1.6rem); color: rgba(255,255,255,0.15); font-weight: 300; }
+    .result-value-tonnes { font-size: clamp(1.9rem, 4.5vw, 2.5rem); font-weight: 800; color: var(--text); letter-spacing: -0.02em; line-height: 1; }
+    .result-value-tonnes small { font-size: 0.4em; font-weight: 600; color: var(--muted); margin-left: 6px; }
+    .result-sub { font-size: 0.84rem; color: var(--muted); margin-top: 8px; }
+
+    /* Winch selection */
+    .winch-panel {
+      margin-top: 18px; padding: 16px; border-radius: 14px;
+      background: rgba(251,146,60,0.06); border: 1px solid rgba(251,146,60,0.2);
+    }
+    .winch-result-row {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+      margin-top: 10px; padding-top: 12px; border-top: 1px solid rgba(251,146,60,0.18);
+      flex-wrap: wrap;
+    }
+    .winch-result-label { font-size: 0.82rem; color: var(--muted); }
+    .winch-result-value { font-size: 1.4rem; font-weight: 800; color: var(--orange); }
+    .winch-result-value small { font-size: 0.6em; font-weight: 600; color: var(--muted); margin-left: 4px; }
+    .fos-guide { font-size: 0.74rem; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
+    .breakdown-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .breakdown-table th, .breakdown-table td { text-align: left; padding: 8px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .breakdown-table th { color: var(--muted); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    .breakdown-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .breakdown-table tr.total-row td { font-weight: 700; color: var(--accent); border-top: 2px solid rgba(111,215,211,0.25); border-bottom: none; padding-top: 10px; }
+    .row-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 7px; vertical-align: middle; }
+
+    .note-box { margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: rgba(240,185,87,0.08); border: 1px solid rgba(240,185,87,0.2); font-size: 0.8rem; color: var(--muted); }
+    .note-box strong { color: var(--warn); }
+    .disclaimer { margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); font-size: 0.76rem; color: var(--muted); }
+
+    footer { padding: 28px 0 50px; color: var(--muted); border-top: 1px solid rgba(255,255,255,0.06); }
+    .small { font-size: 0.92rem; }
+
+    @media (max-width: 980px) {
+      .calc-layout { grid-template-columns: 1fr; }
+      .panel-sticky { position: static; }
+      .type-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .nav-links, .nav-cta .btn { display: none; }
+      .menu-toggle { display: inline-flex; }
+      .nav.open .nav-links {
+        display: grid; position: absolute; left: 1rem; right: 1rem; top: 76px;
+        background: #0c1721; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08);
+      }
+      .field-row { grid-template-columns: 1fr; }
+      .section { padding: 32px 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav" id="topNav">
+      <a class="brand" href="index.html" aria-label="CableTrack - Home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="50,6 84,26 84,74 50,94 16,74 16,26" fill="#071018" stroke="#6fd7d3" stroke-width="3"/>
+            <path d="M24 34 L50 50 L76 34" stroke="#6fd7d3" stroke-width="6" stroke-linecap="round"/>
+            <path d="M24 66 L50 50 L76 66" stroke="#6fd7d3" stroke-width="6" stroke-linecap="round"/>
+            <path d="M38 22V42 M50 18V46 M62 22V42" stroke="#eaf4f7" stroke-width="4"/>
+            <path d="M38 58V78 M50 54V82 M62 58V78" stroke="#2f8fa2" stroke-width="4"/>
+          </svg>
+        </span>
+        <span>CableTrack</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="index.html#services">Services</a>
+        <a href="index.html#platform">Platform</a>
+        <a href="jtube-calculator.html">Tools</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+
+      <div class="nav-cta">
+        <a class="btn btn-secondary" href="index.html#platform">View Platform</a>
+        <a class="btn btn-primary" href="index.html#contact">Book a Call</a>
+        <button class="menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">Menu</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <span class="eyebrow">Free Engineering Tool</span>
+        <h1>J-Tube Cable Pull-In Force Calculator</h1>
+        <p class="lead">Build your own J-tube profile — add as many straight or curved sections as your design needs, choose each bend's direction, and see a scale diagram alongside the calculated static pull-in tension.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: 8px;">
+      <div class="container">
+
+        <!-- ============ DIAGRAM ============ -->
+        <div class="panel diagram-panel">
+          <h4>Scale Diagram — Cable Path</h4>
+          <div class="diagram-svg-wrap">
+            <svg id="pathSvg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"></svg>
+          </div>
+          <div class="diagram-legend" id="diagramLegend"></div>
+        </div>
+
+        <div class="calc-layout">
+
+          <!-- ============ INPUT PANEL ============ -->
+          <div class="panel">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom: 4px;">
+              <h4 style="margin-bottom:0;">Global Parameters</h4>
+              <button type="button" class="btn btn-ghost btn-small" id="resetBtn" title="Revert everything to the base-case J-tube example">↺ Reset to Base Case</button>
+            </div>
+
+            <div class="field-group">
+              <div class="field-row"><label for="omegaAir">Cable weight in air<span class="field-hint">kg/m</span></label><input class="input" type="number" step="any" id="omegaAir" value="33.4" /></div>
+              <div class="field-row"><label for="omegaWater">Cable weight in water<span class="field-hint">Submerged unit weight, kg/m</span></label><input class="input" type="number" step="any" id="omegaWater" value="19.8" /></div>
+              <div class="field-row"><label for="cableOD">Cable outside diameter<span class="field-hint">mm</span></label><input class="input" type="number" step="any" id="cableOD" value="146" /></div>
+              <div class="field-row"><label for="jtubeID">J-tube inner diameter<span class="field-hint">mm</span></label><input class="input" type="number" step="any" id="jtubeID" value="425" /></div>
+              <div class="field-row"><label for="cableEI">Cable bending stiffness (EI)<span class="field-hint">kN·m²</span></label><input class="input" type="number" step="any" id="cableEI" value="12.7" /></div>
+              <div class="field-row"><label for="cableJ">Torsional stiffness (J)<span class="field-hint">kN·m² per degree</span></label><input class="input" type="number" step="any" id="cableJ" value="2.34" /></div>
+            </div>
+
+            <div class="field-group">
+              <div class="field-row"><label for="layTension">Starting / lay tension<span class="field-hint">tonnes</span></label><input class="input" type="number" step="any" id="layTension" value="0.5" /></div>
+              <div class="field-row"><label for="startHeading">Starting heading<span class="field-hint">degrees from horizontal</span></label><input class="input" type="number" step="any" id="startHeading" value="0" /></div>
+              <div class="field-row"><label for="planPhi">Plan-view twist angle (Φ)<span class="field-hint">deg, hang-off to guide bearing</span></label><input class="input" type="number" step="any" id="planPhi" value="30" /></div>
+              <div class="field-row"><label for="cpsMass">CPS engagement allowance<span class="field-hint">tonnes, applied then released</span></label><input class="input" type="number" step="any" id="cpsMass" value="1" /></div>
+              <div class="field-row"><label for="seaSurface">Sea surface height<span class="field-hint">m above seabed, optional — for diagram</span></label><input class="input" type="number" step="any" id="seaSurface" value="" placeholder="e.g. 35" /></div>
+            </div>
+
+            <h4 style="margin-top: 6px;">Sections</h4>
+            <p style="font-size: 0.82rem; margin-bottom: 12px;">Add as many straight or curved sections as your J-tube needs, in order from the seabed touchdown to the hang-off. Sections are auto-named <em>Section N – Type_n</em> based on position and type count.</p>
+
+            <div id="sectionList"></div>
+
+            <div class="add-row">
+              <button type="button" class="btn btn-secondary btn-small" id="addStraightBtn">+ Add Straight Section</button>
+              <button type="button" class="btn btn-secondary btn-small" id="addCurvedBtn">+ Add Curved Section</button>
+            </div>
+          </div>
+
+          <!-- ============ RESULTS PANEL ============ -->
+          <div class="panel panel-sticky">
+            <h4>Result</h4>
+            <div class="result-hero">
+              <div class="result-value-row">
+                <div class="result-value" id="resultKN">— <small>kN</small></div>
+                <div class="result-value-divider">/</div>
+                <div class="result-value-tonnes" id="resultTonneMain">— <small>tonnes-force</small></div>
+              </div>
+              <div class="result-sub" id="resultTonne">Add sections to calculate</div>
+            </div>
+
+            <div class="winch-panel">
+              <h4 style="margin-bottom: 8px; color: var(--orange);">Winch Selection</h4>
+              <div class="field-row" style="grid-template-columns: 1fr 130px;">
+                <label for="fosSelect">Factor of Safety (FoS)</label>
+                <select id="fosSelect">
+                  <option value="1.5">1.5×</option>
+                  <option value="2.0" selected>2.0×</option>
+                  <option value="2.5">2.5×</option>
+                  <option value="3.0">3.0×</option>
+                  <option value="custom">Custom…</option>
+                </select>
+              </div>
+              <div class="field-row" id="fosCustomRow" style="display:none; grid-template-columns: 1fr 130px;">
+                <label for="fosCustom">Custom FoS</label>
+                <input class="input" type="number" step="any" id="fosCustom" value="2.0" />
+              </div>
+              <p class="fos-guide">There is no single codified factor for sizing a pull-in winch against a calculated static tension (unlike lifting gear SWL/MBL ratios under DNV 2.7-1). 2.0× is a commonly used starting point for routine pull-ins with well-understood friction and geometry; move towards 2.5–3.0× where inputs are uncertain, dynamic/snagging effects aren't separately modelled, or conditions are more severe. Always confirm against your project's or contractor's engineering standard.</p>
+              <div class="winch-result-row">
+                <span class="winch-result-label">Recommended min. winch SWL</span>
+                <span class="winch-result-value" id="winchSWL">— <small>kN</small></span>
+              </div>
+              <div class="winch-result-row" style="margin-top: 0; padding-top: 4px; border-top: none;">
+                <span class="winch-result-label"></span>
+                <span class="winch-result-value" id="winchSWLTonnes">— <small>tonnes</small></span>
+              </div>
+            </div>
+
+            <h4 style="margin-top: 18px;">Section Breakdown</h4>
+            <table class="breakdown-table" id="breakdownTable">
+              <thead><tr><th>Section</th><th class="num">Tension</th><th class="num">Cumulative</th></tr></thead>
+              <tbody id="breakdownBody"><tr><td colspan="3" style="color: var(--muted);">Build your section list to see the breakdown.</td></tr></tbody>
+            </table>
+
+            <div class="note-box" id="geomWarning" style="display:none;"></div>
+
+            <div class="disclaimer">
+              <strong>Methodology:</strong> straight sections use the pull force F = W·(μ·cosθ + sinθ); confined curved sections add bending moment (EI/r) amplified by Eytelwein capstan friction (e^{μφ}) on the running cumulative tension, plus suspended arc weight; unconfined (free) bends add only suspended arc weight. Torsion uses J·Φ divided by the torsionally-restrained cable length. This is an indicative estimate only — verify against a full site-specific calculation before specifying winch or installation equipment capacity.
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+      <span>&copy; <span id="year"></span> CableTrack Ltd. All rights reserved.</span>
+      <span class="small">Cable engineering platform &amp; specialist consultancy &mdash; United Kingdom</span>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() { document.getElementById('topNav').classList.toggle('open'); }
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const g = 9.80665;
+    function deg2rad(d) { return d * Math.PI / 180; }
+
+    const PALETTE = ['#6fd7d3', '#a78bfa', '#fb923c', '#f0b957', '#f472b6', '#60a5fa', '#4ade80', '#f87171', '#22d3ee', '#a3e635'];
+
+    let nextId = 1;
+    let sectionOrder = []; // [{id, type}]
+
+    function newId() { return nextId++; }
+
+    // ---------- Default preset (matches the reference 9-section J-tube) ----------
+    function loadDefaultPreset() {
+      sectionOrder = [];
+      const s1 = newId(); sectionOrder.push({ id: s1, type: 'straight' });
+      const c1 = newId(); sectionOrder.push({ id: c1, type: 'curved' });
+      const s2 = newId(); sectionOrder.push({ id: s2, type: 'straight' });
+      const c2 = newId(); sectionOrder.push({ id: c2, type: 'curved' });
+      const s3 = newId(); sectionOrder.push({ id: s3, type: 'straight' });
+      const c3 = newId(); sectionOrder.push({ id: c3, type: 'curved' });
+      const s4 = newId(); sectionOrder.push({ id: s4, type: 'straight' });
+      const c4 = newId(); sectionOrder.push({ id: c4, type: 'curved' });
+      const s5 = newId(); sectionOrder.push({ id: s5, type: 'straight' });
+
+      renderSectionList();
+
+      setVal('s' + s1 + '_length', 10); setVal('s' + s1 + '_mu', '0.40'); setVal('s' + s1 + '_medium', 'water'); setChecked('s' + s1 + '_torsion', false);
+
+      const bellSweep = (Math.acos((2.5 - 3) / 2.5) * 180 / Math.PI).toFixed(2);
+      setVal('s' + c1 + '_radius', 2.5); setVal('s' + c1 + '_sweep', bellSweep); setVal('s' + c1 + '_dir', 'ccw'); setChecked('s' + c1 + '_confined', false); setVal('s' + c1 + '_medium', 'water');
+      toggleConfinedFields(c1);
+
+      setVal('s' + s2 + '_length', 2.67); setVal('s' + s2 + '_mu', '0.25'); setVal('s' + s2 + '_medium', 'water'); setChecked('s' + s2 + '_override', true); setVal('s' + s2 + '_overrideVal', 60); toggleOverrideField(s2);
+
+      setVal('s' + c2 + '_radius', 8); setVal('s' + c2 + '_sweep', 38.8); setVal('s' + c2 + '_dir', 'ccw'); setChecked('s' + c2 + '_confined', true); setVal('s' + c2 + '_mu', '0.25'); setVal('s' + c2 + '_medium', 'water');
+
+      setVal('s' + s3 + '_length', 43.64); setVal('s' + s3 + '_mu', '0.25'); setVal('s' + s3 + '_medium', 'water'); setChecked('s' + s3 + '_override', true); setVal('s' + s3 + '_overrideVal', 83.8); toggleOverrideField(s3);
+
+      setVal('s' + c3 + '_radius', 8); setVal('s' + c3 + '_sweep', 28.8); setVal('s' + c3 + '_dir', 'ccw'); setChecked('s' + c3 + '_confined', true); setVal('s' + c3 + '_mu', '0.70'); setVal('s' + c3 + '_medium', 'water');
+
+      setVal('s' + s4 + '_length', 5.655); setVal('s' + s4 + '_mu', '0.70'); setVal('s' + s4 + '_medium', 'water'); setChecked('s' + s4 + '_override', true); setVal('s' + s4 + '_overrideVal', 55); toggleOverrideField(s4);
+
+      setVal('s' + c4 + '_radius', 8); setVal('s' + c4 + '_sweep', 35); setVal('s' + c4 + '_dir', 'ccw'); setChecked('s' + c4 + '_confined', true); setVal('s' + c4 + '_mu', '0.70'); setVal('s' + c4 + '_medium', 'water');
+
+      setVal('s' + s5 + '_length', 1); setVal('s' + s5 + '_mu', '0.70'); setVal('s' + s5 + '_medium', 'air'); setChecked('s' + s5 + '_override', true); setVal('s' + s5 + '_overrideVal', 90); toggleOverrideField(s5);
+
+      calculate();
+    }
+
+    function setVal(id, v) { const el = document.getElementById(id); if (el) el.value = v; }
+    function setChecked(id, v) { const el = document.getElementById(id); if (el) el.checked = v; }
+
+    // ---------- Naming ----------
+    function computeNames() {
+      const counts = { straight: 0, curved: 0 };
+      const names = {};
+      sectionOrder.forEach((s, i) => {
+        counts[s.type]++;
+        const typeLabel = s.type === 'straight' ? 'Straight' : 'Curved';
+        names[s.id] = 'Section ' + (i + 1) + ' – ' + typeLabel + '_' + counts[s.type];
+      });
+      return names;
+    }
+
+    // ---------- Rendering the section list ----------
+    function renderSectionList() {
+      const container = document.getElementById('sectionList');
+      const names = computeNames();
+      container.innerHTML = '';
+      sectionOrder.forEach((s, i) => {
+        const color = PALETTE[i % PALETTE.length];
+        const card = document.createElement('div');
+        card.className = 'section-card';
+        card.style.borderLeftColor = color;
+        card.dataset.id = s.id;
+
+        const isFirst = i === 0, isLast = i === sectionOrder.length - 1;
+
+        card.innerHTML =
+          '<div class="section-card-head">' +
+            '<div class="section-card-title"><span class="section-card-dot" style="background:' + color + '"></span><span id="s' + s.id + '_label">' + names[s.id] + '</span></div>' +
+            '<div class="section-card-controls">' +
+              '<button type="button" class="icon-btn" data-act="up" ' + (isFirst ? 'disabled style="opacity:.3;"' : '') + ' title="Move up">↑</button>' +
+              '<button type="button" class="icon-btn" data-act="down" ' + (isLast ? 'disabled style="opacity:.3;"' : '') + ' title="Move down">↓</button>' +
+              '<button type="button" class="icon-btn danger" data-act="remove" title="Remove">✕</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="section-card-body" id="s' + s.id + '_body"></div>';
+
+        container.appendChild(card);
+        document.getElementById('s' + s.id + '_body').innerHTML = s.type === 'straight' ? straightFieldsHTML(s.id) : curvedFieldsHTML(s.id);
+
+        card.querySelector('[data-act="up"]').addEventListener('click', function () { moveSection(s.id, -1); });
+        card.querySelector('[data-act="down"]').addEventListener('click', function () { moveSection(s.id, 1); });
+        card.querySelector('[data-act="remove"]').addEventListener('click', function () { removeSection(s.id); });
+      });
+
+      renderLegend(names);
+    }
+
+    function straightFieldsHTML(id) {
+      return (
+        '<div class="field-row"><label for="s' + id + '_length">Length<span class="field-hint">m</span></label><input class="input" type="number" step="any" id="s' + id + '_length" value="10" /></div>' +
+        '<div class="field-row"><label for="s' + id + '_mu">Friction coefficient</label>' +
+          '<select id="s' + id + '_mu">' +
+            '<option value="0.25">Rubber–Steel (wet) — 0.25</option>' +
+            '<option value="0.40">Rubber–Steel (dry) — 0.40</option>' +
+            '<option value="0.70">Cable–Seabed (sand) — 0.70</option>' +
+            '<option value="custom">Custom…</option>' +
+          '</select></div>' +
+        '<div class="field-row" id="s' + id + '_muCustomRow" style="display:none;"><label for="s' + id + '_muCustom">Custom μ</label><input class="input" type="number" step="any" id="s' + id + '_muCustom" value="0.30" /></div>' +
+        '<div class="field-row"><label for="s' + id + '_medium">Cable weight basis</label>' +
+          '<select id="s' + id + '_medium"><option value="water">Submerged</option><option value="air">In air</option></select></div>' +
+        '<div class="checkbox-row"><input type="checkbox" id="s' + id + '_override" /><label for="s' + id + '_override">Override angle from horizontal</label></div>' +
+        '<div class="field-row" id="s' + id + '_overrideRow" style="display:none;"><label for="s' + id + '_overrideVal">Angle from horizontal<span class="field-hint">degrees, overrides derived heading</span></label><input class="input" type="number" step="any" id="s' + id + '_overrideVal" value="0" /></div>' +
+        '<div class="derived-note" id="s' + id + '_headingNote">Derived heading: —</div>' +
+        '<div class="checkbox-row" style="margin-top:10px;"><input type="checkbox" id="s' + id + '_torsion" checked /><label for="s' + id + '_torsion">Counts toward torsion/twist length</label></div>'
+      );
+    }
+
+    function curvedFieldsHTML(id) {
+      return (
+        '<div class="type-row">' +
+          '<div><label style="font-size:0.86rem;display:block;margin-bottom:6px;" for="s' + id + '_radius">Bend radius (m)</label><input class="input" type="number" step="any" id="s' + id + '_radius" value="8" /></div>' +
+          '<div><label style="font-size:0.86rem;display:block;margin-bottom:6px;" for="s' + id + '_sweep">Swept angle (deg)</label><input class="input" type="number" step="any" id="s' + id + '_sweep" value="35" /></div>' +
+        '</div>' +
+        '<div class="field-row"><label for="s' + id + '_dir">Bend direction</label><select id="s' + id + '_dir"><option value="ccw">Counter-clockwise</option><option value="cw">Clockwise</option></select></div>' +
+        '<div class="checkbox-row"><input type="checkbox" id="s' + id + '_confined" checked /><label for="s' + id + '_confined">Confined in J-tube (bending + capstan friction applies)</label></div>' +
+        '<div id="s' + id + '_confinedFields">' +
+          '<div class="field-row"><label for="s' + id + '_mu">Friction coefficient</label>' +
+            '<select id="s' + id + '_mu">' +
+              '<option value="0.25">Rubber–Steel (wet) — 0.25</option>' +
+              '<option value="0.40">Rubber–Steel (dry) — 0.40</option>' +
+              '<option value="0.70" selected>Cable–Seabed (sand) — 0.70</option>' +
+              '<option value="custom">Custom…</option>' +
+            '</select></div>' +
+          '<div class="field-row" id="s' + id + '_muCustomRow" style="display:none;"><label for="s' + id + '_muCustom">Custom μ</label><input class="input" type="number" step="any" id="s' + id + '_muCustom" value="0.30" /></div>' +
+        '</div>' +
+        '<div class="field-row"><label for="s' + id + '_medium">Cable weight basis</label>' +
+          '<select id="s' + id + '_medium"><option value="water">Submerged</option><option value="air">In air</option></select></div>' +
+        '<div class="derived-note" id="s' + id + '_headingNote">Heading in / out: —</div>'
+      );
+    }
+
+    function renderLegend(names) {
+      const el = document.getElementById('diagramLegend');
+      el.innerHTML = '';
+      sectionOrder.forEach((s, i) => {
+        const color = PALETTE[i % PALETTE.length];
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.innerHTML = '<span class="legend-dot" style="background:' + color + '"></span><span>' + names[s.id] + '</span>';
+        el.appendChild(item);
+      });
+    }
+
+    // ---------- Structural actions ----------
+    function addSection(type) {
+      sectionOrder.push({ id: newId(), type: type });
+      renderSectionList();
+      bindDynamicListeners();
+      calculate();
+    }
+    function removeSection(id) {
+      sectionOrder = sectionOrder.filter(s => s.id !== id);
+      renderSectionList();
+      bindDynamicListeners();
+      calculate();
+    }
+    function moveSection(id, dir) {
+      const idx = sectionOrder.findIndex(s => s.id === id);
+      const swapIdx = idx + dir;
+      if (swapIdx < 0 || swapIdx >= sectionOrder.length) return;
+      const tmp = sectionOrder[idx];
+      sectionOrder[idx] = sectionOrder[swapIdx];
+      sectionOrder[swapIdx] = tmp;
+      renderSectionList();
+      bindDynamicListeners();
+      calculate();
+    }
+
+    document.getElementById('addStraightBtn').addEventListener('click', function () { addSection('straight'); });
+    document.getElementById('addCurvedBtn').addEventListener('click', function () { addSection('curved'); });
+
+    function toggleConfinedFields(id) {
+      const box = document.getElementById('s' + id + '_confined');
+      const fields = document.getElementById('s' + id + '_confinedFields');
+      if (box && fields) fields.style.display = box.checked ? '' : 'none';
+    }
+    function toggleOverrideField(id) {
+      const box = document.getElementById('s' + id + '_override');
+      const row = document.getElementById('s' + id + '_overrideRow');
+      if (box && row) row.style.display = box.checked ? 'grid' : 'none';
+    }
+    function toggleMuCustom(id) {
+      const sel = document.getElementById('s' + id + '_mu');
+      const row = document.getElementById('s' + id + '_muCustomRow');
+      if (sel && row) row.style.display = sel.value === 'custom' ? 'grid' : 'none';
+    }
+
+    function bindDynamicListeners() {
+      sectionOrder.forEach(s => {
+        if (s.type === 'curved') {
+          const confinedBox = document.getElementById('s' + s.id + '_confined');
+          if (confinedBox) confinedBox.addEventListener('change', function () { toggleConfinedFields(s.id); calculate(); });
+        }
+        if (s.type === 'straight') {
+          const overrideBox = document.getElementById('s' + s.id + '_override');
+          if (overrideBox) overrideBox.addEventListener('change', function () { toggleOverrideField(s.id); calculate(); });
+        }
+        const muSel = document.getElementById('s' + s.id + '_mu');
+        if (muSel) muSel.addEventListener('change', function () { toggleMuCustom(s.id); calculate(); });
+      });
+    }
+
+    // Delegate general input/change events for live recalculation
+    document.addEventListener('input', function (e) {
+      if (e.target.closest('#sectionList') || e.target.closest('.field-group')) calculate();
+    });
+    document.addEventListener('change', function (e) {
+      if (e.target.closest('#sectionList') || e.target.closest('.field-group')) calculate();
+    });
+
+    function getMu(id) {
+      const sel = document.getElementById('s' + id + '_mu');
+      if (!sel) return 0.3;
+      if (sel.value === 'custom') return parseFloat(document.getElementById('s' + id + '_muCustom').value) || 0;
+      return parseFloat(sel.value);
+    }
+    function num(id) { const el = document.getElementById(id); return el ? parseFloat(el.value) || 0 : 0; }
+
+    // ---------- Core calculation + geometry ----------
+    function calculate() {
+      const names = computeNames();
+
+      const omegaAir = num('omegaAir');
+      const omegaWater = num('omegaWater');
+      const cableOD_m = num('cableOD') / 1000;
+      const jtubeID_m = num('jtubeID') / 1000;
+      const lJtubeClearance = jtubeID_m - cableOD_m;
+      const EI = num('cableEI');
+      const J = num('cableJ');
+      const layTensionKN = num('layTension') * 1000 * g / 1000;
+      const startHeading = num('startHeading');
+      const planPhi = num('planPhi');
+      const cpsMass = num('cpsMass');
+      const seaSurfaceRaw = document.getElementById('seaSurface').value;
+      const seaSurface = seaSurfaceRaw === '' ? null : parseFloat(seaSurfaceRaw);
+
+      let heading = startHeading;
+      let pos = { x: 0, y: 0 };
+      let sigmaCum = layTensionKN;
+      let torsionLength = 0;
+      const rows = [{ label: 'Starting / lay tension', tension: layTensionKN, cum: sigmaCum, color: '#93a5ae' }];
+      const segments = [];
+      let warning = '';
+
+      sectionOrder.forEach((s, i) => {
+        const color = PALETTE[i % PALETTE.length];
+        const name = names[s.id];
+
+        if (s.type === 'straight') {
+          const length = num('s' + s.id + '_length');
+          const mu = getMu(s.id);
+          const mediumEl = document.getElementById('s' + s.id + '_medium');
+          const medium = mediumEl ? mediumEl.value : 'water';
+          const overrideBox = document.getElementById('s' + s.id + '_override');
+          const useOverride = overrideBox && overrideBox.checked;
+          const h = useOverride ? num('s' + s.id + '_overrideVal') : heading;
+          const torsionBox = document.getElementById('s' + s.id + '_torsion');
+          const includeTorsion = torsionBox ? torsionBox.checked : true;
+
+          const omega = medium === 'air' ? omegaAir : omegaWater;
+          const W = (omega * length * g) / 1000;
+          const hr = deg2rad(h);
+          const F = W * (mu * Math.cos(hr) + Math.sin(hr));
+          sigmaCum += F;
+          if (includeTorsion) torsionLength += length;
+
+          const newPos = { x: pos.x + length * Math.cos(hr), y: pos.y + length * Math.sin(hr) };
+          segments.push({ points: [pos, newPos], color: color, name: name });
+          pos = newPos;
+          heading = h;
+
+          const noteEl = document.getElementById('s' + s.id + '_headingNote');
+          if (noteEl) noteEl.textContent = (useOverride ? 'Manual heading: ' : 'Derived heading: ') + h.toFixed(1) + '° from horizontal';
+
+          rows.push({ label: name + ' (straight)', tension: F, cum: sigmaCum, color: color });
+        } else {
+          const radius = num('s' + s.id + '_radius');
+          const sweep = num('s' + s.id + '_sweep');
+          const dirEl = document.getElementById('s' + s.id + '_dir');
+          const dirVal = dirEl ? dirEl.value : 'ccw';
+          const dir = dirVal === 'ccw' ? 1 : -1;
+          const confinedBox = document.getElementById('s' + s.id + '_confined');
+          const confined = confinedBox ? confinedBox.checked : true;
+          const mediumEl = document.getElementById('s' + s.id + '_medium');
+          const medium = mediumEl ? mediumEl.value : 'water';
+          const omega = medium === 'air' ? omegaAir : omegaWater;
+
+          if (radius <= 0) { warning = 'Bend radius must be greater than zero (' + name + ').'; }
+
+          const sweepRad = deg2rad(sweep);
+          const arcLen = radius * sweepRad;
+          const t = (omega * arcLen * g) / 1000;
+
+          let sectionTension;
+          if (confined) {
+            const mu = getMu(s.id);
+            const k = radius !== 0 ? 1 / radius : 0;
+            const BM = EI * k;
+            const Tbend = lJtubeClearance !== 0 ? BM / lJtubeClearance : 0;
+            if (lJtubeClearance <= 0) warning = 'J-tube inner diameter must exceed cable outside diameter for a confined bend clearance.';
+            const F = sigmaCum + Tbend * Math.exp(mu * sweepRad);
+            sectionTension = F + t;
+            sigmaCum = sectionTension;
+            torsionLength += arcLen;
+          } else {
+            sectionTension = t;
+            sigmaCum += sectionTension;
+          }
+
+          const h0 = deg2rad(heading);
+          let center;
+          if (dir === 1) { center = { x: pos.x - radius * Math.sin(h0), y: pos.y + radius * Math.cos(h0) }; }
+          else { center = { x: pos.x + radius * Math.sin(h0), y: pos.y - radius * Math.cos(h0) }; }
+
+          const N = Math.max(6, Math.ceil(Math.abs(sweep) / 4));
+          const pts = [];
+          for (let k2 = 0; k2 <= N; k2++) {
+            const tt = sweepRad * (k2 / N);
+            let px, py;
+            if (dir === 1) { px = center.x + radius * Math.sin(h0 + tt); py = center.y - radius * Math.cos(h0 + tt); }
+            else { px = center.x - radius * Math.sin(h0 - tt); py = center.y + radius * Math.cos(h0 - tt); }
+            pts.push({ x: px, y: py });
+          }
+          segments.push({ points: pts, color: color, name: name });
+          pos = pts[pts.length - 1];
+          const headingBefore = heading;
+          heading += dir * sweep;
+
+          const noteEl = document.getElementById('s' + s.id + '_headingNote');
+          if (noteEl) noteEl.textContent = 'Heading in: ' + headingBefore.toFixed(1) + '° → out: ' + heading.toFixed(1) + '° (' + (dir === 1 ? 'CCW' : 'CW') + ')';
+
+          rows.push({ label: name + ' (curved, ' + (confined ? 'confined' : 'free') + ')', tension: sectionTension, cum: sigmaCum, color: color });
+        }
+      });
+
+      const warnEl = document.getElementById('geomWarning');
+      if (warning) { warnEl.style.display = 'block'; warnEl.innerHTML = '<strong>Check inputs:</strong> ' + warning; }
+      else { warnEl.style.display = 'none'; }
+
+      let sigmaOverall = sigmaCum;
+      let sigmaTorsion = 0;
+      if (torsionLength > 0) {
+        const Ttorsion = (J * planPhi) / torsionLength;
+        sigmaTorsion = Ttorsion / ((cableOD_m * 0.5) + 0.02);
+        sigmaOverall = sigmaTorsion + sigmaCum;
+      }
+
+      const sigmaCPS = (cpsMass * 1000 * g) / 1000;
+      const sigmaTotal = sigmaCPS + sigmaOverall - sigmaCPS; // applied then released, net traceable zero
+
+      // ---- Winch SWL ----
+      const fosSel = document.getElementById('fosSelect');
+      const fos = fosSel.value === 'custom' ? (parseFloat(document.getElementById('fosCustom').value) || 1) : parseFloat(fosSel.value);
+      const winchSWL_kN = sigmaTotal * fos;
+
+      // ---- Render results ----
+      if (sectionOrder.length === 0) {
+        document.getElementById('resultKN').innerHTML = '— <small>kN</small>';
+        document.getElementById('resultTonneMain').innerHTML = '— <small>tonnes-force</small>';
+        document.getElementById('resultTonne').textContent = 'Add sections to calculate';
+        document.getElementById('winchSWL').innerHTML = '— <small>kN</small>';
+        document.getElementById('winchSWLTonnes').innerHTML = '— <small>tonnes</small>';
+      } else {
+        document.getElementById('resultKN').innerHTML = sigmaTotal.toFixed(1) + ' <small>kN</small>';
+        document.getElementById('resultTonneMain').innerHTML = (sigmaTotal / g).toFixed(2) + ' <small>tonnes-force</small>';
+        document.getElementById('resultTonne').textContent = 'Expected static pull-in load — calculated tension before any safety factor';
+        document.getElementById('winchSWL').innerHTML = winchSWL_kN.toFixed(1) + ' <small>kN</small>';
+        document.getElementById('winchSWLTonnes').innerHTML = (winchSWL_kN / g).toFixed(2) + ' <small>tonnes</small>';
+      }
+
+      const tbody = document.getElementById('breakdownBody');
+      tbody.innerHTML = '';
+      if (sectionOrder.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="color: var(--muted);">Build your section list to see the breakdown.</td></tr>';
+      } else {
+        rows.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = '<td><span class="row-dot" style="background:' + r.color + '"></span>' + r.label + '</td><td class="num">' + r.tension.toFixed(2) + ' kN</td><td class="num">' + r.cum.toFixed(2) + ' kN</td>';
+          tbody.appendChild(tr);
+        });
+        const torsionRow = document.createElement('tr');
+        torsionRow.innerHTML = '<td>Torsion (twist to match plan-view bearing)</td><td class="num">' + sigmaTorsion.toFixed(2) + ' kN</td><td class="num">—</td>';
+        tbody.appendChild(torsionRow);
+        const totalRow = document.createElement('tr');
+        totalRow.className = 'total-row';
+        totalRow.innerHTML = '<td>Total expected static pull-in load</td><td class="num"></td><td class="num">' + sigmaTotal.toFixed(2) + ' kN (' + (sigmaTotal / g).toFixed(2) + ' t)</td>';
+        tbody.appendChild(totalRow);
+      }
+
+      drawDiagram(segments, seaSurface);
+    }
+
+    // ---------- Diagram rendering ----------
+    function drawDiagram(segments, seaSurface) {
+      const svg = document.getElementById('pathSvg');
+      svg.innerHTML = '';
+
+      if (segments.length === 0) {
+        svg.setAttribute('viewBox', '0 0 100 100');
+        return;
+      }
+
+      // Collect all points (svg space = x, y with y flipped so "up" is up)
+      let allPts = [];
+      segments.forEach(seg => seg.points.forEach(p => allPts.push({ x: p.x, y: -p.y })));
+      // include origin and sea surface if set
+      allPts.push({ x: 0, y: 0 });
+      if (seaSurface !== null && !isNaN(seaSurface)) allPts.push({ x: 0, y: -seaSurface });
+
+      let minX = Math.min(...allPts.map(p => p.x));
+      let maxX = Math.max(...allPts.map(p => p.x));
+      let minY = Math.min(...allPts.map(p => p.y));
+      let maxY = Math.max(...allPts.map(p => p.y));
+
+      const spanX = maxX - minX || 1;
+      const spanY = maxY - minY || 1;
+      const span = Math.max(spanX, spanY);
+      const pad = span * 0.15 + 1;
+
+      minX -= pad; maxX += pad; minY -= pad; maxY += pad;
+      const w = maxX - minX, h = maxY - minY;
+
+      svg.setAttribute('viewBox', minX.toFixed(2) + ' ' + minY.toFixed(2) + ' ' + w.toFixed(2) + ' ' + h.toFixed(2));
+
+      const ns = 'http://www.w3.org/2000/svg';
+      const strokeW = Math.max(span / 90, 0.05);
+      const fontSize = Math.max(span / 42, 0.35);
+
+      // seabed line (model y=0 -> svg y=0)
+      const seabed = document.createElementNS(ns, 'line');
+      seabed.setAttribute('x1', minX); seabed.setAttribute('x2', maxX);
+      seabed.setAttribute('y1', 0); seabed.setAttribute('y2', 0);
+      seabed.setAttribute('stroke', 'rgba(170,189,199,0.35)');
+      seabed.setAttribute('stroke-width', strokeW * 0.6);
+      seabed.setAttribute('stroke-dasharray', (strokeW * 1.5) + ',' + (strokeW * 1.5));
+      svg.appendChild(seabed);
+      const seabedLabel = document.createElementNS(ns, 'text');
+      seabedLabel.setAttribute('x', minX + pad * 0.2); seabedLabel.setAttribute('y', -fontSize * 0.4);
+      seabedLabel.setAttribute('fill', 'rgba(170,189,199,0.6)'); seabedLabel.setAttribute('font-size', fontSize * 0.8);
+      seabedLabel.textContent = 'Seabed';
+      svg.appendChild(seabedLabel);
+
+      if (seaSurface !== null && !isNaN(seaSurface)) {
+        const sea = document.createElementNS(ns, 'line');
+        sea.setAttribute('x1', minX); sea.setAttribute('x2', maxX);
+        sea.setAttribute('y1', -seaSurface); sea.setAttribute('y2', -seaSurface);
+        sea.setAttribute('stroke', 'rgba(96,165,250,0.4)');
+        sea.setAttribute('stroke-width', strokeW * 0.6);
+        sea.setAttribute('stroke-dasharray', (strokeW * 0.8) + ',' + (strokeW * 1.2));
+        svg.appendChild(sea);
+        const seaLabel = document.createElementNS(ns, 'text');
+        seaLabel.setAttribute('x', minX + pad * 0.2); seaLabel.setAttribute('y', -seaSurface - fontSize * 0.4);
+        seaLabel.setAttribute('fill', 'rgba(96,165,250,0.7)'); seaLabel.setAttribute('font-size', fontSize * 0.8);
+        seaLabel.textContent = 'Sea surface';
+        svg.appendChild(seaLabel);
+      }
+
+      // section polylines
+      segments.forEach(seg => {
+        const ptsStr = seg.points.map(p => p.x.toFixed(3) + ',' + (-p.y).toFixed(3)).join(' ');
+        const poly = document.createElementNS(ns, 'polyline');
+        poly.setAttribute('points', ptsStr);
+        poly.setAttribute('fill', 'none');
+        poly.setAttribute('stroke', seg.color);
+        poly.setAttribute('stroke-width', strokeW);
+        poly.setAttribute('stroke-linecap', 'round');
+        poly.setAttribute('stroke-linejoin', 'round');
+        svg.appendChild(poly);
+
+        // label near midpoint, offset perpendicular
+        const mid = seg.points[Math.floor(seg.points.length / 2)];
+        const prev = seg.points[Math.max(0, Math.floor(seg.points.length / 2) - 1)];
+        const dx = mid.x - prev.x, dy = mid.y - prev.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const perp = { x: -dy / len, y: dx / len };
+        const offset = span * 0.045;
+        const labelX = mid.x + perp.x * offset;
+        const labelY = -(mid.y + perp.y * offset);
+
+        const label = document.createElementNS(ns, 'text');
+        label.setAttribute('x', labelX); label.setAttribute('y', labelY);
+        label.setAttribute('fill', seg.color); label.setAttribute('font-size', fontSize);
+        label.setAttribute('text-anchor', 'middle'); label.setAttribute('font-weight', '600');
+        label.textContent = seg.name.replace(/^Section \d+ – /, '');
+        svg.appendChild(label);
+      });
+
+      // start marker
+      const start = segments[0].points[0];
+      const startCircle = document.createElementNS(ns, 'circle');
+      startCircle.setAttribute('cx', start.x); startCircle.setAttribute('cy', -start.y);
+      startCircle.setAttribute('r', strokeW * 1.4); startCircle.setAttribute('fill', '#aabdc7');
+      svg.appendChild(startCircle);
+      const startLabel = document.createElementNS(ns, 'text');
+      startLabel.setAttribute('x', start.x); startLabel.setAttribute('y', -start.y + fontSize * 1.6);
+      startLabel.setAttribute('fill', '#aabdc7'); startLabel.setAttribute('font-size', fontSize * 0.85);
+      startLabel.setAttribute('text-anchor', 'middle');
+      startLabel.textContent = 'Touchdown';
+      svg.appendChild(startLabel);
+
+      // end marker
+      const lastSeg = segments[segments.length - 1];
+      const end = lastSeg.points[lastSeg.points.length - 1];
+      const endCircle = document.createElementNS(ns, 'circle');
+      endCircle.setAttribute('cx', end.x); endCircle.setAttribute('cy', -end.y);
+      endCircle.setAttribute('r', strokeW * 1.6); endCircle.setAttribute('fill', '#6fd7d3');
+      svg.appendChild(endCircle);
+      const endLabel = document.createElementNS(ns, 'text');
+      endLabel.setAttribute('x', end.x); endLabel.setAttribute('y', -end.y - fontSize * 1.2);
+      endLabel.setAttribute('fill', '#6fd7d3'); endLabel.setAttribute('font-size', fontSize * 0.85);
+      endLabel.setAttribute('text-anchor', 'middle'); endLabel.setAttribute('font-weight', '700');
+      endLabel.textContent = 'Hang-off';
+      svg.appendChild(endLabel);
+
+      // scale bar
+      const niceLengths = [0.5, 1, 2, 5, 10, 20, 25, 50, 100, 200, 500];
+      let scaleLen = niceLengths[0];
+      for (const nl of niceLengths) { if (nl <= span * 0.3) scaleLen = nl; }
+      const barX0 = minX + pad * 0.3, barY = maxY - pad * 0.4;
+      const bar = document.createElementNS(ns, 'line');
+      bar.setAttribute('x1', barX0); bar.setAttribute('x2', barX0 + scaleLen);
+      bar.setAttribute('y1', barY); bar.setAttribute('y2', barY);
+      bar.setAttribute('stroke', '#eaf4f7'); bar.setAttribute('stroke-width', strokeW * 0.5);
+      svg.appendChild(bar);
+      [barX0, barX0 + scaleLen].forEach(tx => {
+        const tick = document.createElementNS(ns, 'line');
+        tick.setAttribute('x1', tx); tick.setAttribute('x2', tx);
+        tick.setAttribute('y1', barY - fontSize * 0.3); tick.setAttribute('y2', barY + fontSize * 0.3);
+        tick.setAttribute('stroke', '#eaf4f7'); tick.setAttribute('stroke-width', strokeW * 0.5);
+        svg.appendChild(tick);
+      });
+      const barLabel = document.createElementNS(ns, 'text');
+      barLabel.setAttribute('x', barX0 + scaleLen / 2); barLabel.setAttribute('y', barY - fontSize * 0.6);
+      barLabel.setAttribute('fill', '#eaf4f7'); barLabel.setAttribute('font-size', fontSize * 0.8);
+      barLabel.setAttribute('text-anchor', 'middle');
+      barLabel.textContent = scaleLen + ' m';
+      svg.appendChild(barLabel);
+    }
+
+    // ---------- Winch FoS controls ----------
+    document.getElementById('fosSelect').addEventListener('change', function () {
+      document.getElementById('fosCustomRow').style.display = this.value === 'custom' ? 'grid' : 'none';
+      calculate();
+    });
+    document.getElementById('fosCustom').addEventListener('input', calculate);
+
+    // ---------- Reset to base case ----------
+    const GLOBAL_DEFAULTS = {
+      omegaAir: 33.4, omegaWater: 19.8, cableOD: 146, jtubeID: 425, cableEI: 12.7, cableJ: 2.34,
+      layTension: 0.5, startHeading: 0, planPhi: 30, cpsMass: 1, seaSurface: ''
+    };
+
+    function resetToBaseCase(skipConfirm) {
+      if (!skipConfirm && !window.confirm('Reset all parameters and sections back to the base-case J-tube example? Any changes you\'ve made will be lost.')) {
+        return;
+      }
+      Object.keys(GLOBAL_DEFAULTS).forEach(id => setVal(id, GLOBAL_DEFAULTS[id]));
+      setVal('fosSelect', '2.0');
+      document.getElementById('fosCustomRow').style.display = 'none';
+      loadDefaultPreset(); // rebuilds sections, sets their fields, and calls calculate()
+      bindDynamicListeners();
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', function () { resetToBaseCase(false); });
+
+    // ---------- Init ----------
+    loadDefaultPreset();
+    bindDynamicListeners();
+  </script>
+</body>
+</html>
