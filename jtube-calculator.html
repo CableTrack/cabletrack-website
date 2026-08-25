@@ -425,7 +425,7 @@
               </div>
             </div>
 
-            <button type="button" class="btn btn-secondary" id="openExportBtn" style="width:100%; margin-top: 16px;">✉ Export Results via Email</button>
+            <button type="button" class="btn btn-secondary" id="openExportBtn" style="width:100%; margin-top: 16px;">📄 Download Branded PDF Report</button>
 
             <h4 style="margin-top: 18px;">Section Breakdown</h4>
             <table class="breakdown-table" id="breakdownTable">
@@ -452,8 +452,8 @@
       <button type="button" class="icon-btn" id="closeExportBtn" style="position:absolute; top:16px; right:16px;" aria-label="Close">✕</button>
 
       <div id="exportFormView">
-        <h3 style="margin-bottom: 6px;">Export This Calculation</h3>
-        <p style="font-size: 0.88rem; margin-bottom: 18px;">Leave a few details and we'll open a pre-filled email in your own mail client with the full calculation — inputs, section breakdown, and recommended winch SWL — ready to send or save.</p>
+        <h3 style="margin-bottom: 6px;">Download PDF Report</h3>
+        <p style="font-size: 0.88rem; margin-bottom: 18px;">Leave a few details and we'll generate a branded PDF report — diagram, inputs, section breakdown, and recommended winch SWL — ready to save or share internally.</p>
 
         <form id="exportForm">
           <div class="field-row full-row" style="grid-template-columns: 1fr; margin-bottom: 12px;">
@@ -488,15 +488,15 @@
 
           <div id="exportError" style="display:none; color: var(--danger); font-size: 0.82rem; margin-top: 10px;"></div>
 
-          <button type="submit" class="btn btn-primary" id="exportSubmitBtn" style="width:100%; margin-top: 16px;">Send My Export</button>
+          <button type="submit" class="btn btn-primary" id="exportSubmitBtn" style="width:100%; margin-top: 16px;">Generate My PDF Report</button>
         </form>
       </div>
 
       <div id="exportSuccessView" style="display:none;">
-        <h3 style="margin-bottom: 10px;">Done — check your email client</h3>
-        <p style="font-size: 0.9rem; margin-bottom: 0;">We've opened a pre-filled email with your calculation. If nothing opened, your browser may have blocked it — you can copy the summary below instead.</p>
-        <textarea id="exportSummaryText" readonly style="width:100%; min-height: 220px; margin-top: 14px; font-family: monospace; font-size: 0.78rem;"></textarea>
-        <button type="button" class="btn btn-secondary" id="closeExportSuccessBtn" style="width:100%; margin-top: 14px;">Close</button>
+        <h3 style="margin-bottom: 10px;">Your PDF is downloading</h3>
+        <p style="font-size: 0.9rem; margin-bottom: 0;">Check your browser's downloads. If nothing happened, your browser may have blocked the download — click below to try again.</p>
+        <button type="button" class="btn btn-secondary" id="retryDownloadBtn" style="width:100%; margin-top: 16px;">↻ Download Again</button>
+        <button type="button" class="btn btn-secondary" id="closeExportSuccessBtn" style="width:100%; margin-top: 10px;">Close</button>
       </div>
     </div>
   </div>
@@ -924,7 +924,9 @@
         sigmaTotal: sigmaTotal,
         fos: fos,
         winchSWL_kN: winchSWL_kN,
-        names: names
+        names: names,
+        segments: segments,
+        seaSurface: seaSurface
       };
     }
 
@@ -959,6 +961,7 @@
       const w = maxX - minX, h = maxY - minY;
 
       svg.setAttribute('viewBox', minX.toFixed(2) + ' ' + minY.toFixed(2) + ' ' + w.toFixed(2) + ' ' + h.toFixed(2));
+      svg.setAttribute('font-family', 'Inter, Arial, sans-serif');
 
       const ns = 'http://www.w3.org/2000/svg';
       const strokeW = Math.max(span / 90, 0.05);
@@ -1101,8 +1104,303 @@
 
     document.getElementById('resetBtn').addEventListener('click', function () { resetToBaseCase(false); });
 
-    // ---------- Export via email ----------
+    // ---------- Export as branded PDF ----------
     const WEB3FORMS_KEY = 'd4909213-95a6-4f97-894f-730584024d6b';
+    const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    let jsPdfLoadPromise = null;
+    let lastLeadInfo = null;
+
+    function loadJsPDF() {
+      if (window.jspdf && window.jspdf.jsPDF) return Promise.resolve();
+      if (jsPdfLoadPromise) return jsPdfLoadPromise;
+      jsPdfLoadPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = JSPDF_URL;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Could not load PDF engine'));
+        document.head.appendChild(script);
+      });
+      return jsPdfLoadPromise;
+    }
+
+    function svgToPngDataUrl(svgEl, targetPxWidth) {
+      return new Promise((resolve, reject) => {
+        const clone = svgEl.cloneNode(true);
+        // Inter is a webfont and isn't available inside the sandboxed data-URI
+        // image renderer used below, so it silently falls back to a mismatched
+        // system font and text looks oddly spaced. Force a safe system font
+        // for the rasterised copy only (on-screen SVG keeps using Inter).
+        clone.setAttribute('font-family', 'Arial, Helvetica, sans-serif');
+        clone.querySelectorAll('text').forEach(t => t.setAttribute('font-family', 'Arial, Helvetica, sans-serif'));
+        const vb = svgEl.viewBox.baseVal;
+        const w = (vb && vb.width) ? vb.width : (svgEl.clientWidth || 100);
+        const h = (vb && vb.height) ? vb.height : (svgEl.clientHeight || 100);
+        clone.setAttribute('width', w);
+        clone.setAttribute('height', h);
+
+        const xml = new XMLSerializer().serializeToString(clone);
+        const svg64 = window.btoa(unescape(encodeURIComponent(xml)));
+        const image64 = 'data:image/svg+xml;base64,' + svg64;
+        const img = new Image();
+        img.onload = function () {
+          // The diagram's viewBox is in real-world metres, not pixels, so a
+          // fixed multiplier produced a tiny (often <300px wide) raster that
+          // looked blurry once stretched to fill the PDF page. Instead, size
+          // the canvas to a fixed target pixel width so the export is always
+          // print-sharp regardless of how many metres the J-tube spans.
+          const scale = targetPxWidth / w;
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(w * scale);
+          canvas.height = Math.round(h * scale);
+          const ctx = canvas.getContext('2d');
+          ctx.imageSmoothingEnabled = true;
+          if ('imageSmoothingQuality' in ctx) ctx.imageSmoothingQuality = 'high';
+          ctx.fillStyle = '#0e1924';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve({ dataUrl: canvas.toDataURL('image/png'), width: w, height: h });
+        };
+        img.onerror = reject;
+        img.src = image64;
+      });
+    }
+
+    async function generatePDF(lead) {
+      await loadJsPDF();
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const pageW = doc.internal.pageSize.getWidth();
+      const pageH = doc.internal.pageSize.getHeight();
+      const marginX = 16;
+      const contentW = pageW - marginX * 2;
+
+      // Brand colours (matching site theme)
+      const navy = [8, 16, 24];
+      const panelNavy = [19, 35, 49];
+      const teal = [111, 215, 211];
+      const tealDark = [47, 143, 162];
+      const textLight = [234, 244, 247];
+      const muted = [130, 148, 158];
+      const darkText = [21, 33, 43];
+      const rowFillLight = [240, 244, 246];
+
+      let pageNum = 1;
+
+      function drawHeader() {
+        doc.setFillColor(navy[0], navy[1], navy[2]);
+        doc.rect(0, 0, pageW, 26, 'F');
+
+        // Hexagon brand mark (vector, matches site logo)
+        const cx = marginX + 5, cy = 13, r = 7;
+        const hexPts = [];
+        for (let i = 0; i < 6; i++) {
+          const ang = Math.PI / 180 * (60 * i - 90);
+          hexPts.push([cx + r * Math.cos(ang), cy + r * Math.sin(ang)]);
+        }
+        doc.setDrawColor(teal[0], teal[1], teal[2]);
+        doc.setLineWidth(0.6);
+        for (let i = 0; i < 6; i++) {
+          const p1 = hexPts[i], p2 = hexPts[(i + 1) % 6];
+          doc.line(p1[0], p1[1], p2[0], p2[1]);
+        }
+        doc.setLineWidth(1.1);
+        doc.line(cx - 4, cy - 3.2, cx, cy + 1.2);
+        doc.line(cx, cy + 1.2, cx + 4, cy - 3.2);
+        doc.line(cx - 4, cy + 4.2, cx, cy + 0.2);
+        doc.line(cx, cy + 0.2, cx + 4, cy + 4.2);
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(15);
+        doc.text('CableTrack', marginX + 15, cy + 1.5);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9.5);
+        doc.setTextColor(teal[0], teal[1], teal[2]);
+        doc.text('J-Tube Pull-In Force Calculation', pageW - marginX, 10, { align: 'right' });
+        doc.setTextColor(muted[0], muted[1], muted[2]);
+        doc.setFontSize(8);
+        doc.text('Generated ' + new Date().toLocaleString(), pageW - marginX, 15.5, { align: 'right' });
+      }
+
+      function drawFooter() {
+        doc.setDrawColor(60, 70, 78);
+        doc.setLineWidth(0.2);
+        doc.line(marginX, pageH - 14, pageW - marginX, pageH - 14);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.setTextColor(muted[0], muted[1], muted[2]);
+        doc.text('Indicative engineering estimate only — verify against a full site-specific calculation before specifying winch or installation equipment capacity.', marginX, pageH - 10, { maxWidth: contentW });
+        doc.text('cabletrack.co.uk  ·  hello@cabletrack.co.uk', marginX, pageH - 5.5);
+        doc.text('Page ' + pageNum, pageW - marginX, pageH - 5.5, { align: 'right' });
+      }
+
+      function newPage() {
+        drawFooter();
+        doc.addPage();
+        pageNum++;
+        drawHeader();
+        return 34;
+      }
+
+      function checkBreak(y, needed) {
+        if (y + needed > pageH - 18) return newPage();
+        return y;
+      }
+
+      drawHeader();
+      let y = 34;
+
+      // Prepared-for line
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor(darkText[0], darkText[1], darkText[2]);
+      let preparedFor = 'Prepared for: ' + lead.name;
+      if (lead.company) preparedFor += ' — ' + lead.company;
+      if (lead.position) preparedFor += ' (' + lead.position + ')';
+      doc.text(preparedFor, marginX, y);
+      y += 8;
+
+      // Key result boxes
+      const boxW = (contentW - 6) / 2;
+      const boxH = 24;
+      doc.setFillColor(panelNavy[0], panelNavy[1], panelNavy[2]);
+      doc.roundedRect(marginX, y, boxW, boxH, 2, 2, 'F');
+      doc.roundedRect(marginX + boxW + 6, y, boxW, boxH, 2, 2, 'F');
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(muted[0], muted[1], muted[2]);
+      doc.text('TOTAL EXPECTED STATIC PULL-IN LOAD', marginX + 4, y + 7);
+      doc.text('RECOMMENDED MIN. WINCH SWL (' + lastCalcState.fos + '× FoS)', marginX + boxW + 10, y + 7);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(15);
+      doc.setTextColor(teal[0], teal[1], teal[2]);
+      doc.text(lastCalcState.sigmaTotal.toFixed(1) + ' kN', marginX + 4, y + 16);
+      doc.text(lastCalcState.winchSWL_kN.toFixed(1) + ' kN', marginX + boxW + 10, y + 16);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(textLight[0], textLight[1], textLight[2]);
+      doc.text('(' + (lastCalcState.sigmaTotal / g).toFixed(2) + ' tonnes-force)', marginX + 4, y + 21);
+      doc.text('(' + (lastCalcState.winchSWL_kN / g).toFixed(2) + ' tonnes)', marginX + boxW + 10, y + 21);
+
+      y += boxH + 8;
+
+      // Diagram
+      try {
+        const svgEl = document.getElementById('pathSvg');
+        const raster = await svgToPngDataUrl(svgEl, 2200);
+        const aspect = raster.height / raster.width;
+        let imgW = contentW;
+        let imgH = imgW * aspect;
+        const maxImgH = 85;
+        if (imgH > maxImgH) { imgH = maxImgH; imgW = imgH / aspect; }
+        y = checkBreak(y, imgH + 10);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(teal[0], teal[1], teal[2]);
+        doc.text('SCALE DIAGRAM — CABLE PATH', marginX, y);
+        y += 4;
+        const imgX = marginX + (contentW - imgW) / 2;
+        doc.addImage(raster.dataUrl, 'PNG', imgX, y, imgW, imgH);
+        y += imgH + 8;
+      } catch (err) {
+        // If rasterisation fails for any reason, continue without the diagram rather than blocking the export
+      }
+
+      // Global parameters
+      y = checkBreak(y, 30);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(teal[0], teal[1], teal[2]);
+      doc.text('GLOBAL PARAMETERS', marginX, y);
+      y += 5;
+
+      const params = [
+        ['Cable weight in air', num('omegaAir') + ' kg/m'],
+        ['Cable weight in water', num('omegaWater') + ' kg/m'],
+        ['Cable outside diameter', num('cableOD') + ' mm'],
+        ['J-tube inner diameter', num('jtubeID') + ' mm'],
+        ['Bending stiffness (EI)', num('cableEI') + ' kN·m²'],
+        ['Torsional stiffness (J)', num('cableJ') + ' kN·m²/deg'],
+        ['Starting / lay tension', num('layTension') + ' t'],
+        ['Plan-view twist angle (Phi)', num('planPhi') + ' deg']
+      ];
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      const colW = contentW / 2;
+      params.forEach((p, i) => {
+        const col = i % 2, row = Math.floor(i / 2);
+        const px = marginX + col * colW;
+        const py = y + row * 5.5;
+        doc.setTextColor(muted[0], muted[1], muted[2]);
+        doc.text(p[0] + ':', px, py);
+        doc.setTextColor(darkText[0], darkText[1], darkText[2]);
+        doc.text(p[1], px + 42, py);
+      });
+      y += Math.ceil(params.length / 2) * 5.5 + 8;
+
+      // Section breakdown table
+      y = checkBreak(y, 16);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(teal[0], teal[1], teal[2]);
+      doc.text('SECTION BREAKDOWN', marginX, y);
+      y += 6;
+
+      const colTension = marginX + contentW - 52;
+      const colCum = marginX + contentW - 8;
+      doc.setFontSize(7.5);
+      doc.setTextColor(muted[0], muted[1], muted[2]);
+      doc.text('SECTION', marginX + 4, y);
+      doc.text('TENSION', colTension, y, { align: 'right' });
+      doc.text('CUMULATIVE', colCum, y, { align: 'right' });
+      y += 6;
+
+      const allRows = lastCalcState.rows.concat([{ label: 'Torsion (twist to match plan-view bearing)', tension: lastCalcState.sigmaTorsion, cum: null, color: null }]);
+
+      allRows.forEach((r, i) => {
+        y = checkBreak(y, 7);
+        if (i % 2 === 0) {
+          doc.setFillColor(rowFillLight[0], rowFillLight[1], rowFillLight[2]);
+          doc.rect(marginX, y - 3.6, contentW, 6, 'F');
+        }
+        if (r.color) {
+          const rgb = hexToRgb(r.color);
+          doc.setFillColor(rgb[0], rgb[1], rgb[2]);
+          doc.rect(marginX + 1, y - 2, 2, 2, 'F');
+        }
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(darkText[0], darkText[1], darkText[2]);
+        doc.text(r.label, marginX + 5, y, { maxWidth: contentW - 60 });
+        doc.text(r.tension.toFixed(2) + ' kN', colTension, y, { align: 'right' });
+        doc.text(r.cum !== null ? r.cum.toFixed(2) + ' kN' : '—', colCum, y, { align: 'right' });
+        y += 6;
+      });
+
+      y = checkBreak(y, 10);
+      doc.setDrawColor(teal[0], teal[1], teal[2]);
+      doc.setLineWidth(0.4);
+      doc.line(marginX, y - 2, marginX + contentW, y - 2);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(teal[0], teal[1], teal[2]);
+      doc.text('Total expected static pull-in load', marginX + 5, y + 3);
+      doc.text(lastCalcState.sigmaTotal.toFixed(2) + ' kN (' + (lastCalcState.sigmaTotal / g).toFixed(2) + ' t)', marginX + contentW, y + 3, { align: 'right' });
+
+      drawFooter();
+
+      const filenameSafe = (lead.company || lead.name || 'export').replace(/[^a-z0-9]+/gi, '_');
+      doc.save('CableTrack_JTube_Calculation_' + filenameSafe + '.pdf');
+    }
+
+    function hexToRgb(hex) {
+      const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : [111, 215, 211];
+    }
 
     function buildSummaryText() {
       if (!lastCalcState || !lastCalcState.hasSections) return 'No calculation available — add sections and calculate first.';
@@ -1154,12 +1452,24 @@
         return;
       }
       openExportModal();
+      loadJsPDF().catch(() => {}); // warm the PDF engine while the visitor fills in the form
     });
     document.getElementById('closeExportBtn').addEventListener('click', closeExportModal);
     document.getElementById('closeExportSuccessBtn').addEventListener('click', closeExportModal);
     document.getElementById('exportOverlay').addEventListener('click', function (e) {
       if (e.target === this) closeExportModal();
     });
+    document.getElementById('retryDownloadBtn').addEventListener('click', function () {
+      if (lastLeadInfo) generatePDF(lastLeadInfo).catch(showPdfError);
+    });
+
+    function showPdfError() {
+      document.getElementById('exportFormView').style.display = '';
+      document.getElementById('exportSuccessView').style.display = 'none';
+      const errorEl = document.getElementById('exportError');
+      errorEl.textContent = 'Something went wrong generating the PDF. Please try again.';
+      errorEl.style.display = 'block';
+    }
 
     document.getElementById('exportForm').addEventListener('submit', function (e) {
       e.preventDefault();
@@ -1175,14 +1485,16 @@
       if (!name || !email) { errorEl.textContent = 'Please fill in your name and email.'; errorEl.style.display = 'block'; return; }
       if (!consent) { errorEl.textContent = 'Please tick the box to confirm you\'re happy for us to use your details, or close this window to keep just viewing your result.'; errorEl.style.display = 'block'; return; }
 
+      const lead = { name, company, position, email };
+      lastLeadInfo = lead;
       const summary = buildSummaryText();
       const btn = document.getElementById('exportSubmitBtn');
       btn.disabled = true;
-      btn.textContent = 'Sending...';
+      btn.textContent = 'Generating...';
 
       const formData = new FormData();
       formData.append('access_key', WEB3FORMS_KEY);
-      formData.append('subject', 'J-Tube Calculator export — ' + name + (company ? ' (' + company + ')' : ''));
+      formData.append('subject', 'J-Tube Calculator PDF export — ' + name + (company ? ' (' + company + ')' : ''));
       formData.append('from_name', 'CableTrack J-Tube Calculator');
       formData.append('name', name);
       formData.append('company', company);
@@ -1190,34 +1502,19 @@
       formData.append('email', email);
       formData.append('message', summary);
 
-      fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData })
-        .then(res => res.json())
-        .then(data => {
-          // Regardless of Web3Forms outcome, give the visitor their own copy via mailto —
-          // the lead record is a bonus for CableTrack, not a blocker for the visitor's export.
-          const subject = encodeURIComponent('My J-Tube Pull-In Calculation Result');
-          const body = encodeURIComponent(summary);
-          const mailtoLink = 'mailto:' + encodeURIComponent(email) + '?subject=' + subject + '&body=' + body;
+      // Lead capture (Web3Forms) and PDF generation are independent — a failure in one
+      // shouldn't block the other. The visitor always gets their PDF if generation succeeds.
+      fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData }).catch(() => {});
 
-          document.getElementById('exportSummaryText').value = summary;
+      generatePDF(lead)
+        .then(() => {
           document.getElementById('exportFormView').style.display = 'none';
           document.getElementById('exportSuccessView').style.display = '';
-
-          window.location.href = mailtoLink;
         })
-        .catch(() => {
-          // Even if the lead POST fails, still give them their export
-          const subject = encodeURIComponent('My J-Tube Pull-In Calculation Result');
-          const body = encodeURIComponent(summary);
-          const mailtoLink = 'mailto:' + encodeURIComponent(email) + '?subject=' + subject + '&body=' + body;
-          document.getElementById('exportSummaryText').value = summary;
-          document.getElementById('exportFormView').style.display = 'none';
-          document.getElementById('exportSuccessView').style.display = '';
-          window.location.href = mailtoLink;
-        })
+        .catch(showPdfError)
         .finally(() => {
           btn.disabled = false;
-          btn.textContent = 'Send My Export';
+          btn.textContent = 'Generate My PDF Report';
         });
     });
 
