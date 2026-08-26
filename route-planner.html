@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Plan a Route | CableTrack Routing Tool</title>
+<meta name="robots" content="noindex, follow" />
+<link rel="canonical" href="https://cabletrack.co.uk/route-planner.html" />
+<style>
+  :root {
+    --bg: #081018;
+    --panel: #101d28;
+    --panel-2: #132331;
+    --line: rgba(125, 223, 220, 0.18);
+    --text: #eaf4f7;
+    --muted: #aabdc7;
+    --accent: #6fd7d3;
+    --accent-2: #2f8fa2;
+    --radius: 20px;
+    --shadow: 0 20px 60px rgba(0,0,0,0.35);
+    --warn: #f0b957;
+    --ok: #7bd88f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+      linear-gradient(180deg, rgba(111,215,211,0.05), transparent 18%),
+      linear-gradient(135deg, #071018 0%, #0c1620 48%, #081018 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  a { color: inherit; }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; justify-content: center; margin-bottom: 22px; text-decoration: none; }
+  .brand-mark {
+    width: 38px; height: 38px; border-radius: 11px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(135deg, rgba(111,215,211,0.2), rgba(47,143,162,0.08)), #0d1620;
+    display: grid; place-items: center;
+  }
+  .brand-mark svg { width: 24px; height: 24px; }
+  .card {
+    width: 100%; max-width: 480px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px;
+  }
+  h1 { font-size: 1.5rem; margin: 0 0 6px; letter-spacing: -0.02em; }
+  .sub { color: var(--muted); font-size: 0.95rem; margin: 0 0 24px; line-height: 1.5; }
+  .field { position: relative; margin-bottom: 16px; }
+  .field label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 6px; }
+  .field input {
+    width: 100%; padding: 13px 14px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--panel-2); color: var(--text);
+    font-size: 0.95rem; outline: none;
+  }
+  .field input:focus { border-color: var(--accent); }
+  .autocomplete-list {
+    position: absolute; top: 100%; left: 0; right: 0; margin-top: 6px;
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: var(--shadow); max-height: 220px; overflow-y: auto; z-index: 10;
+  }
+  .autocomplete-item { padding: 10px 14px; cursor: pointer; font-size: 0.9rem; }
+  .autocomplete-item:hover { background: rgba(111,215,211,0.08); }
+  .autocomplete-item .country { color: var(--muted); font-size: 0.78rem; }
+  .status {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.85rem; color: var(--muted); margin: 4px 0 22px;
+  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warn); flex-shrink: 0; }
+  .status-dot.ok { background: var(--ok); }
+  .status-dot.warming {
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .btn {
+    width: 100%; padding: 14px; border-radius: 14px; border: none;
+    font-weight: 600; font-size: 0.98rem; cursor: pointer;
+    background: linear-gradient(135deg, var(--accent), #8af0ec); color: #062028;
+    transition: 0.2s ease;
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn:not(:disabled):hover { transform: translateY(-1px); }
+  .swap-row { display: flex; justify-content: flex-end; margin: -10px 0 6px; }
+  .swap-btn {
+    background: none; border: 1px solid var(--line); color: var(--muted);
+    border-radius: 8px; padding: 4px 10px; font-size: 0.78rem; cursor: pointer;
+  }
+  .swap-btn:hover { color: var(--text); border-color: var(--accent); }
+  .back-link { display: block; text-align: center; margin-top: 18px; font-size: 0.85rem; color: var(--muted); text-decoration: none; }
+  .back-link:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+  <div>
+    <a class="brand" href="https://cabletrack.co.uk/">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="50,6 84,26 84,74 50,94 16,74 16,26" fill="#071018" stroke="#6fd7d3" stroke-width="3"/>
+          <path d="M24 34 L50 50 L76 34" stroke="#6fd7d3" stroke-width="6" stroke-linecap="round"/>
+          <path d="M24 66 L50 50 L76 66" stroke="#6fd7d3" stroke-width="6" stroke-linecap="round"/>
+          <path d="M38 22V42 M50 18V46 M62 22V42" stroke="#eaf4f7" stroke-width="4"/>
+          <path d="M38 58V78 M50 54V82 M62 58V78" stroke="#2f8fa2" stroke-width="4"/>
+        </svg>
+      </span>
+      <span>CableTrack</span>
+    </a>
+
+    <div class="card">
+      <h1>Plan your route</h1>
+      <p class="sub">Tell us your start and destination ports — we'll open the routing tool straight into your route while it finishes warming up.</p>
+
+      <div class="field">
+        <label for="origin-input">From port</label>
+        <input type="text" id="origin-input" placeholder="Search a port, e.g. Rotterdam" autocomplete="off" />
+        <div id="origin-list" class="autocomplete-list" style="display:none;"></div>
+      </div>
+
+      <div class="swap-row">
+        <button type="button" class="swap-btn" id="swap-btn">Swap ⇅</button>
+      </div>
+
+      <div class="field">
+        <label for="dest-input">To port</label>
+        <input type="text" id="dest-input" placeholder="Search a port, e.g. Esbjerg" autocomplete="off" />
+        <div id="dest-list" class="autocomplete-list" style="display:none;"></div>
+      </div>
+
+      <div class="status">
+        <span class="status-dot warming" id="status-dot"></span>
+        <span id="status-text">Warming up the routing engine…</span>
+      </div>
+
+      <button class="btn" id="continue-btn" disabled>Choose both ports to continue</button>
+      <a class="back-link" href="https://cabletrack.co.uk/">← Back to CableTrack</a>
+    </div>
+  </div>
+
+<script>
+const BACKEND = 'https://cabletrack-routing-tool.onrender.com';
+const originInput = document.getElementById('origin-input');
+const destInput = document.getElementById('dest-input');
+const originList = document.getElementById('origin-list');
+const destList = document.getElementById('dest-list');
+const continueBtn = document.getElementById('continue-btn');
+const statusDot = document.getElementById('status-dot');
+const statusText = document.getElementById('status-text');
+const swapBtn = document.getElementById('swap-btn');
+
+let origin = null; // { lon, lat, name }
+let dest = null;
+let backendReady = false;
+
+function updateContinueState() {
+  if (origin && dest) {
+    continueBtn.disabled = false;
+    continueBtn.textContent = backendReady ? 'Open route' : 'Open route (still warming up)';
+  } else {
+    continueBtn.disabled = true;
+    continueBtn.textContent = 'Choose both ports to continue';
+  }
+}
+
+function markReady() {
+  if (backendReady) return;
+  backendReady = true;
+  statusDot.classList.remove('warming');
+  statusDot.classList.add('ok');
+  statusText.textContent = 'Routing engine ready.';
+  updateContinueState();
+}
+
+// Fire a wake-up ping immediately, then poll until the free-tier instance
+// has actually spun up. no-cors on the very first ping so it fires even
+// before CORS negotiation completes; the polls after that read the real
+// response since the backend allows GET from this origin.
+fetch(`${BACKEND}/api/ports/search?q=a`, { mode: 'no-cors' }).catch(() => {});
+
+let pollTimer = setInterval(async () => {
+  try {
+    const res = await fetch(`${BACKEND}/api/ports/search?q=a`);
+    if (res.ok) {
+      clearInterval(pollTimer);
+      markReady();
+    }
+  } catch (err) {
+    // still asleep or waking up -- keep polling
+  }
+}, 3000);
+
+function wireAutocomplete(input, listEl, onPick) {
+  let timer = null;
+  input.addEventListener('input', () => {
+    clearTimeout(timer);
+    const q = input.value.trim();
+    if (q.length < 2) { listEl.style.display = 'none'; return; }
+    timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`${BACKEND}/api/ports/search?q=${encodeURIComponent(q)}`);
+        const ports = await res.json();
+        markReady();
+        if (!ports.length) { listEl.style.display = 'none'; return; }
+        listEl.innerHTML = ports.map((p, i) =>
+          `<div class="autocomplete-item" data-i="${i}">${p.name} <span class="country">— ${p.country || ''}</span></div>`
+        ).join('');
+        listEl.style.display = 'block';
+        [...listEl.children].forEach((el, i) => {
+          el.addEventListener('click', () => {
+            const p = ports[i];
+            onPick(p);
+            listEl.style.display = 'none';
+          });
+        });
+      } catch (err) {
+        // backend still waking up -- let the poll above catch it
+      }
+    }, 200);
+  });
+  document.addEventListener('click', (e) => {
+    if (e.target !== input) listEl.style.display = 'none';
+  });
+}
+
+wireAutocomplete(originInput, originList, (p) => {
+  origin = p;
+  originInput.value = p.name;
+  updateContinueState();
+});
+wireAutocomplete(destInput, destList, (p) => {
+  dest = p;
+  destInput.value = p.name;
+  updateContinueState();
+});
+
+swapBtn.addEventListener('click', () => {
+  [origin, dest] = [dest, origin];
+  originInput.value = origin ? origin.name : '';
+  destInput.value = dest ? dest.name : '';
+  updateContinueState();
+});
+
+continueBtn.addEventListener('click', () => {
+  if (!origin || !dest) return;
+  const params = new URLSearchParams({
+    olon: origin.lon, olat: origin.lat, oname: origin.name,
+    dlon: dest.lon, dlat: dest.lat, dname: dest.name,
+  });
+  window.location.href = `${BACKEND}/?${params.toString()}`;
+});
+</script>
+</body>
+</html>
