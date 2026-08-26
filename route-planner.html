@@ -70,7 +70,7 @@
   .autocomplete-item .country { color: var(--muted); font-size: 0.78rem; }
   .status {
     display: flex; align-items: center; gap: 8px;
-    font-size: 0.85rem; color: var(--muted); margin: 4px 0 22px;
+    font-size: 0.85rem; color: var(--muted); margin: 4px 0 10px;
   }
   .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warn); flex-shrink: 0; }
   .status-dot.ok { background: var(--ok); }
@@ -78,6 +78,17 @@
     animation: pulse 1.2s ease-in-out infinite;
   }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .progress-track {
+    width: 100%; height: 6px; border-radius: 999px;
+    background: rgba(255,255,255,0.06); overflow: hidden;
+    margin: 0 0 22px;
+  }
+  .progress-fill {
+    height: 100%; width: 0%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    transition: width 0.4s ease, background 0.3s ease;
+  }
+  .progress-fill.ok { background: var(--ok); }
   .btn {
     width: 100%; padding: 14px; border-radius: 14px; border: none;
     font-weight: 600; font-size: 0.98rem; cursor: pointer;
@@ -135,6 +146,7 @@
         <span class="status-dot warming" id="status-dot"></span>
         <span id="status-text">Warming up the routing engine…</span>
       </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
 
       <button class="btn" id="continue-btn" disabled>Choose both ports to continue</button>
       <a class="back-link" href="https://cabletrack.co.uk/">← Back to CableTrack</a>
@@ -150,11 +162,30 @@ const destList = document.getElementById('dest-list');
 const continueBtn = document.getElementById('continue-btn');
 const statusDot = document.getElementById('status-dot');
 const statusText = document.getElementById('status-text');
+const progressFill = document.getElementById('progress-fill');
 const swapBtn = document.getElementById('swap-btn');
 
 let origin = null; // { lon, lat, name }
 let dest = null;
 let backendReady = false;
+
+// Render's free tier gives no real progress signal -- this is an estimate
+// against their own published guidance ("50 seconds or more"), not a true
+// percentage. Capped short of 100% until we actually confirm the backend
+// is responding, so it never claims "ready" prematurely.
+const WARMUP_ESTIMATE_MS = 50000;
+const warmupStart = Date.now();
+let progressTimer = setInterval(updateProgress, 500);
+updateProgress();
+
+function updateProgress() {
+  if (backendReady) return;
+  const elapsedMs = Date.now() - warmupStart;
+  const elapsedS = Math.floor(elapsedMs / 1000);
+  const pct = Math.min(96, Math.round((elapsedMs / WARMUP_ESTIMATE_MS) * 100));
+  progressFill.style.width = pct + '%';
+  statusText.textContent = `Warming up the routing engine… ${elapsedS}s (usually ready within ~50s)`;
+}
 
 function updateContinueState() {
   if (origin && dest) {
@@ -169,9 +200,13 @@ function updateContinueState() {
 function markReady() {
   if (backendReady) return;
   backendReady = true;
+  clearInterval(progressTimer);
   statusDot.classList.remove('warming');
   statusDot.classList.add('ok');
-  statusText.textContent = 'Routing engine ready.';
+  progressFill.classList.add('ok');
+  progressFill.style.width = '100%';
+  const totalS = Math.round((Date.now() - warmupStart) / 1000);
+  statusText.textContent = `Routing engine ready (${totalS}s).`;
   updateContinueState();
 }
 
@@ -195,31 +230,56 @@ let pollTimer = setInterval(async () => {
 
 function wireAutocomplete(input, listEl, onPick) {
   let timer = null;
+  let lastPorts = [];
+
+  function pick(p) {
+    onPick(p);
+    listEl.style.display = 'none';
+  }
+
   input.addEventListener('input', () => {
     clearTimeout(timer);
     const q = input.value.trim();
-    if (q.length < 2) { listEl.style.display = 'none'; return; }
+    if (q.length < 2) { listEl.style.display = 'none'; lastPorts = []; return; }
     timer = setTimeout(async () => {
       try {
         const res = await fetch(`${BACKEND}/api/ports/search?q=${encodeURIComponent(q)}`);
         const ports = await res.json();
         markReady();
+        lastPorts = ports;
         if (!ports.length) { listEl.style.display = 'none'; return; }
         listEl.innerHTML = ports.map((p, i) =>
           `<div class="autocomplete-item" data-i="${i}">${p.name} <span class="country">— ${p.country || ''}</span></div>`
         ).join('');
         listEl.style.display = 'block';
         [...listEl.children].forEach((el, i) => {
-          el.addEventListener('click', () => {
-            const p = ports[i];
-            onPick(p);
-            listEl.style.display = 'none';
-          });
+          el.addEventListener('click', () => pick(ports[i]));
         });
       } catch (err) {
         // backend still waking up -- let the poll above catch it
       }
     }, 200);
+  });
+  // Typing a port and pressing Enter (or tabbing/clicking away) felt like it
+  // "did nothing" -- a port was only ever committed by clicking the dropdown
+  // row. Enter now commits the top match, and losing focus commits an exact
+  // (case-insensitive) name match from the last search, so the Continue
+  // button doesn't stay stuck disabled just because a suggestion wasn't
+  // explicitly clicked.
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && lastPorts.length) {
+      e.preventDefault();
+      pick(lastPorts[0]);
+    }
+  });
+  input.addEventListener('blur', () => {
+    setTimeout(() => {
+      listEl.style.display = 'none';
+      const q = input.value.trim().toLowerCase();
+      if (!q) return;
+      const exact = lastPorts.find(p => p.name.toLowerCase() === q);
+      if (exact) pick(exact);
+    }, 150); // delay so a click on a dropdown row registers before we hide it
   });
   document.addEventListener('click', (e) => {
     if (e.target !== input) listEl.style.display = 'none';
