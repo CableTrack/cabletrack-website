@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CBRA Demo Dashboard | CableTrack</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="canonical" href="https://cabletrack.co.uk/cbra-demo.html" />
+<style>
+  :root {
+    --bg: #081018;
+    --panel: #101d28;
+    --panel-2: #132331;
+    --line: rgba(125, 223, 220, 0.18);
+    --text: #eaf4f7;
+    --muted: #aabdc7;
+    --accent: #6fd7d3;
+    --accent-2: #2f8fa2;
+    --radius: 20px;
+    --shadow: 0 20px 60px rgba(0,0,0,0.35);
+    --warn: #f0b957;
+    --ok: #7bd88f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+      linear-gradient(180deg, rgba(111,215,211,0.05), transparent 18%),
+      linear-gradient(135deg, #071018 0%, #0c1620 48%, #081018 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  a { color: inherit; }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; justify-content: center; margin-bottom: 22px; text-decoration: none; }
+  .brand-mark {
+    width: 38px; height: 38px; border-radius: 11px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(135deg, rgba(111,215,211,0.2), rgba(47,143,162,0.08)), #0d1620;
+    display: grid; place-items: center;
+  }
+  .brand-mark svg { width: 24px; height: 24px; }
+  .card {
+    width: 100%; max-width: 480px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px;
+  }
+  h1 { font-size: 1.5rem; margin: 0 0 6px; letter-spacing: -0.02em; }
+  .sub { color: var(--muted); font-size: 0.95rem; margin: 0 0 24px; line-height: 1.5; }
+  .lock-note {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; margin: 0 0 22px; font-size: 0.85rem; color: var(--muted); line-height: 1.5;
+  }
+  .lock-note svg { flex-shrink: 0; margin-top: 2px; width: 16px; height: 16px; color: var(--accent); }
+  .status {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.85rem; color: var(--muted); margin: 4px 0 10px;
+  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warn); flex-shrink: 0; }
+  .status-dot.ok { background: var(--ok); }
+  .status-dot.warming { animation: pulse 1.2s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .progress-track {
+    width: 100%; height: 6px; border-radius: 999px;
+    background: rgba(255,255,255,0.06); overflow: hidden;
+    margin: 0 0 22px;
+  }
+  .progress-fill {
+    height: 100%; width: 0%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    transition: width 0.4s ease, background 0.3s ease;
+  }
+  .progress-fill.ok { background: var(--ok); }
+  .btn {
+    width: 100%; padding: 14px; border-radius: 14px; border: none;
+    font-weight: 600; font-size: 0.98rem; cursor: pointer;
+    background: linear-gradient(135deg, var(--accent), #8af0ec); color: #062028;
+    transition: 0.2s ease;
+  }
+  .btn:not(:disabled):hover { transform: translateY(-1px); }
+  .back-link { display: block; text-align: center; margin-top: 18px; font-size: 0.85rem; color: var(--muted); text-decoration: none; }
+  .back-link:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+  <div>
+    <a class="brand" href="https://cabletrack.co.uk/">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="50,6 84,26 84,74 50,94 16,74 16,26" fill="#071018" stroke="#6fd7d3" stroke-width="3"/>
+          <path d="M24 34 L50 50 L76 34" stroke="#6fd7d3" stroke-width="6" stroke-linecap="round"/>
+          <path d="M24 66 L50 50 L76 66" stroke="#6fd7d3" stroke-width="6" stroke-linecap="round"/>
+          <path d="M38 22V42 M50 18V46 M62 22V42" stroke="#eaf4f7" stroke-width="4"/>
+          <path d="M38 58V78 M50 54V82 M62 58V78" stroke="#2f8fa2" stroke-width="4"/>
+        </svg>
+      </span>
+      <span>CableTrack</span>
+    </a>
+
+    <div class="card">
+      <h1>CBRA Demo Dashboard</h1>
+      <p class="sub">A live walkthrough of our Cable Burial Risk Assessment output — layout variants, ground conditions, and illustrative burial depths for a sample offshore wind project.</p>
+
+      <div class="lock-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        <span>This is a private demo. Your browser will ask for a username and password — use the credentials you were given.</span>
+      </div>
+
+      <div class="status">
+        <span class="status-dot warming" id="status-dot"></span>
+        <span id="status-text">Warming up the dashboard server…</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+
+      <button class="btn" id="continue-btn">Open dashboard</button>
+      <a class="back-link" href="https://cabletrack.co.uk/">← Back to CableTrack</a>
+    </div>
+  </div>
+
+<script>
+const BACKEND = 'https://cabletrack-routing-tool.onrender.com';
+const statusDot = document.getElementById('status-dot');
+const statusText = document.getElementById('status-text');
+const progressFill = document.getElementById('progress-fill');
+const continueBtn = document.getElementById('continue-btn');
+
+let backendReady = false;
+
+// Render's free tier gives no real progress signal -- this is an estimate
+// against their own published guidance ("50 seconds or more"), not a true
+// percentage. Capped short of 100% until we actually confirm the backend
+// is responding, so it never claims "ready" prematurely. Mirrors the same
+// warm-up pattern used on route-planner.html.
+const WARMUP_ESTIMATE_MS = 50000;
+const warmupStart = Date.now();
+let progressTimer = setInterval(updateProgress, 500);
+updateProgress();
+
+function updateProgress() {
+  if (backendReady) return;
+  const elapsedMs = Date.now() - warmupStart;
+  const elapsedS = Math.floor(elapsedMs / 1000);
+  const pct = Math.min(96, Math.round((elapsedMs / WARMUP_ESTIMATE_MS) * 100));
+  progressFill.style.width = pct + '%';
+  statusText.textContent = `Warming up the dashboard server… ${elapsedS}s (usually ready within ~50s)`;
+}
+
+function markReady() {
+  if (backendReady) return;
+  backendReady = true;
+  clearInterval(progressTimer);
+  statusDot.classList.remove('warming');
+  statusDot.classList.add('ok');
+  progressFill.classList.add('ok');
+  progressFill.style.width = '100%';
+  const totalS = Math.round((Date.now() - warmupStart) / 1000);
+  statusText.textContent = `Dashboard server ready (${totalS}s).`;
+}
+
+// Wake the free-tier instance via an existing, unauthenticated GET endpoint
+// (the password-gated /cbra-demo route itself would just trigger a browser
+// login prompt if used for polling, which we don't want here).
+fetch(`${BACKEND}/api/ports/search?q=a`, { mode: 'no-cors' }).catch(() => {});
+
+let pollTimer = setInterval(async () => {
+  try {
+    const res = await fetch(`${BACKEND}/api/ports/search?q=a`);
+    if (res.ok) {
+      clearInterval(pollTimer);
+      markReady();
+    }
+  } catch (err) {
+    // still asleep or waking up -- keep polling
+  }
+}, 3000);
+
+continueBtn.addEventListener('click', () => {
+  window.location.href = `${BACKEND}/cbra-demo`;
+});
+</script>
+</body>
+</html>
